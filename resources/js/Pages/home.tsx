@@ -20,7 +20,12 @@ type IconName =
     | "external"
     | "box"
     | "users"
-    | "clock";
+    | "clock"
+    | "calendar"
+    | "download"
+    | "video"
+    | "alertCircle"
+    | "diagram";
 
 function Icon({ name, size = 16, className = "" }: { name: IconName; size?: number; className?: string }) {
     const icons: Record<IconName, React.ReactNode> = {
@@ -120,6 +125,43 @@ function Icon({ name, size = 16, className = "" }: { name: IconName; size?: numb
                 <polyline points="12 6 12 12 16 14" />
             </>
         ),
+        calendar: (
+            <>
+                <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                <line x1="16" x2="16" y1="2" y2="6" />
+                <line x1="8" x2="8" y1="2" y2="6" />
+                <line x1="3" x2="21" y1="10" y2="10" />
+            </>
+        ),
+        download: (
+            <>
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" x2="12" y1="15" y2="3" />
+            </>
+        ),
+        video: (
+            <>
+                <rect width="14" height="12" x="2" y="6" rx="2" />
+                <polygon points="22 8 16 12 22 16 22 8" />
+            </>
+        ),
+        alertCircle: (
+            <>
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" x2="12" y1="8" y2="12" />
+                <line x1="12" x2="12.01" y1="16" y2="16" />
+            </>
+        ),
+        diagram: (
+            <>
+                <rect width="6" height="6" x="3" y="3" rx="1" />
+                <rect width="6" height="6" x="15" y="3" rx="1" />
+                <rect width="6" height="6" x="9" y="15" rx="1" />
+                <path d="M6 9v3a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V9" />
+                <line x1="12" x2="12" y1="13" y2="15" />
+            </>
+        ),
     };
 
     return (
@@ -141,13 +183,17 @@ function Icon({ name, size = 16, className = "" }: { name: IconName; size?: numb
 }
 
 // ==========================================
-// MÓDULOS DE CASOS DE USO COM TELAS REAIS
+// ESTRUTURA DOS CASOS DE USO (ITEM 3 DO EDITAL)
+// Fonte: UseCase Diagram0.asta / Caso-de-Uso.png
+// Atores: Usuário, Administrador, Responsável pelo Estoque,
+//         Diretor, Secretário
 // ==========================================
 interface CaseStudy {
     id: string;
     num: string;
     label: string;
     title: string;
+    actors: string;
     subtitle: string;
     regulation: string;
     metrics: { label: string; val: string }[];
@@ -158,62 +204,428 @@ const CASE_STUDIES: CaseStudy[] = [
     {
         id: "auth",
         num: "01",
-        label: "SEGURANÇA INSTITUCIONAL",
-        title: "Autenticação & Matriz de Perfis",
+        label: "SEGURANÇA & ACESSO",
+        title: "UC01 — Efetuar Login / Logout & Gerenciar Perfil",
+        actors: "Ator: Usuário (todos os perfis do sistema)",
         subtitle:
-            "Controle de acesso rigoroso aderente aos padrões federais e estaduais de identificação de agentes públicos, com suporte a certificado ICP-Brasil, TOTP de duplo fator e segregação de competências.",
-        regulation: "Conformidade LGPD Art. 46 • ISO/IEC 27001 • Padrão ICP-Brasil",
+            "Autenticação segura no portal AxisGov via e-mail e senha, com redirecionamento automático conforme perfil RBAC cadastrado (Administrador, Secretário, Diretor, Responsável pelo Estoque). Suporte a edição de nome, telefone e redefinição de senha com confirmação obrigatória.",
+        regulation: "Lei 13.709/2018 (LGPD) Art. 46 • Middleware Laravel Auth • Proteção por sessão",
         metrics: [
-            { label: "Argon2id KDF", val: "64MB Memory / 4 Threads" },
-            { label: "Sessão Efêmera", val: "30min Timeout Compulsório" },
-            { label: "Risco de Fraude", val: "Zero Acessos Indevidos" },
+            { label: "Perfis de Acesso (RBAC)", val: "5 Níveis Distintos" },
+            { label: "Sessão Protegida", val: "Middleware auth obrigatório" },
+            { label: "Bloqueio de Inativo", val: "Campo ativo = false" },
         ],
         screenType: "auth",
     },
     {
-        id: "dashboard",
+        id: "estoque",
         num: "02",
-        label: "GOVERNANÇA FISCAL",
-        title: "Execução Orçamentária & BI",
+        label: "GESTÃO DE ESTOQUE",
+        title: "UC02 — Gerenciar Produtos & Registrar Movimentações",
+        actors: "Ator: Administrador / Responsável pelo Estoque",
         subtitle:
-            "Centralização das despesas públicas por unidade gestora. Confronto contínuo entre dotação inicial, empenho, liquidação e pagamento, garantindo visibilidade analítica em tempo real para a controladoria.",
-        regulation: "Lei de Responsabilidade Fiscal (LRF 101/2000) • Padrão SICONFI",
+            "Cadastro e manutenção do catálogo de insumos públicos (código único, nome, categoria, valor unitário). Registro transacional de entradas e saídas de estoque com validação de saldo, lock pessimista no banco de dados e geração automática de histórico de movimentações rastreável.",
+        regulation: "Nova Lei de Licitações (Lei 14.133/2021) • Soft Deletes para integridade histórica",
         metrics: [
-            { label: "Orçamento Sob Gestão", val: "R$ 142.800.000,00" },
-            { label: "Taxa de Liquidação", val: "89.4% no Exercício" },
-            { label: "Tempo de Agregação", val: "< 45ms no Postgres" },
+            { label: "Controle de Saldo", val: "DB::transaction() atômico" },
+            { label: "Bloqueio de Ruptura", val: "Validação pré-saída" },
+            { label: "Rastreabilidade", val: "100% das movimentações" },
+        ],
+        screenType: "estoque",
+    },
+    {
+        id: "dashboard",
+        num: "03",
+        label: "GESTÃO DE PEDIDOS",
+        title: "UC03 — Aprovar / Rejeitar Pedidos de Material",
+        actors: "Ator: Administrador (aprovação) • Diretor (criação e acompanhamento)",
+        subtitle:
+            "Fluxo completo de requisição de materiais entre unidades descentralizadas (escolas, setores) e o almoxarifado central. O Diretor cria e acompanha pedidos com status em tempo real; o Administrador analisa e transita o status entre Pendente → Aprovado ou Rejeitado com justificativa formal.",
+        regulation: "Princípio da Eficiência (Art. 37 CF/88) • StatusPedido: PENDENTE / APROVADO / REJEITADO",
+        metrics: [
+            { label: "Estados do Pedido", val: "Pendente → Aprovado / Rejeitado" },
+            { label: "Criação pelo Diretor", val: "Produto + Quantidade + Justificativa" },
+            { label: "Aprovação pelo Admin", val: "Com log de decisão" },
         ],
         screenType: "dashboard",
     },
     {
         id: "patrimonio",
-        num: "03",
-        label: "CONTROLE PATRIMONIAL",
-        title: "Tombamento & Bens Públicos",
+        num: "04",
+        label: "ADMINISTRAÇÃO DO SISTEMA",
+        title: "UC04 — Gerenciar Usuários, Secretarias & Categorias",
+        actors: "Ator: Administrador do Sistema",
         subtitle:
-            "Gestão integral do ativo imobilizado: atribuição de tombo único UUIDv7, emissão de termos de cautela assinados digitalmente, cálculo automático de depreciação acumulada e inventário contábil.",
-        regulation: "Norma Contábil NBC TSP 07 • Lei 4.320/64 de Finanças Públicas",
+            "Gestão completa dos cadastros mestres do AxisGov: criação, edição, inativação e exclusão de usuários com atribuição de perfil RBAC; parametrização de Secretarias Municipais (nome, sigla, endereço, vinculação de diretores); e manutenção da taxonomia de categorias de materiais para o catálogo de produtos.",
+        regulation: "Controle de acesso por role: ROLE_ADMIN=1 • Soft Deletes em todas as entidades",
         metrics: [
-            { label: "Ativos Tombados", val: "28.450 Itens Físicos" },
-            { label: "Acurácia de Inventário", val: "99.98% Auditado" },
-            { label: "Depreciação Mensal", val: "Automática NBCT-SP" },
+            { label: "Entidades Gerenciadas", val: "Usuário, Secretaria, Categoria" },
+            { label: "Atribuição de Papéis", val: "5 Tipos RBAC distintos" },
+            { label: "Integridade Referencial", val: "Soft Delete em cascata" },
         ],
         screenType: "patrimonio",
     },
+];
+
+// ==========================================
+// CRONOGRAMA EM TABELA (EXIGÊNCIA EDITAL UNIFIL)
+// Baseado nas migrações reais do AxisGov:
+// 2026_04_18, 2026_04_24, 2026_07_04, 2026_08_06
+// ==========================================
+interface ScheduleRow {
+    code: string;
+    name: string;
+    module: string;
+    startDate: string;
+    endDate: string;
+    status: "Concluído" | "Em Andamento" | "Homologação" | "Planejado";
+    responsible: string;
+}
+
+const SCHEDULE_DATA: ScheduleRow[] = [
     {
-        id: "estoque",
-        num: "04",
-        label: "LOGÍSTICA & ALMOXARIFADO",
-        title: "Suprimentos & Curva ABC",
-        subtitle:
-            "Monitoramento preditivo de consumo para hospitais, escolas e secretarias. Bloqueio automático de desabastecimento através de ponto de pedido automático e conciliação por leitor ótico.",
-        regulation: "Nova Lei de Licitações (Lei 14.133/2021) • Princípio da Eficiência",
-        metrics: [
-            { label: "Disponibilidade de Insumos", val: "99.4% Sem Ruptura" },
-            { label: "Rastreio por Lote", val: "100% dos Materiais" },
-            { label: "Tempo de Requisição", val: "-68% no Fluxo Geral" },
-        ],
-        screenType: "estoque",
+        code: "UC01",
+        name: "Efetuar Login / Logout & Gerenciar Perfil e Senha",
+        module: "Módulo 01: Autenticação & Segurança (RBAC)",
+        startDate: "18/04/2026",
+        endDate: "25/04/2026",
+        status: "Concluído",
+        responsible: "Samir Chehade",
+    },
+    {
+        code: "UC02",
+        name: "Gerenciar Categorias de Materiais",
+        module: "Módulo 02: Catálogo de Produtos",
+        startDate: "24/04/2026",
+        endDate: "30/04/2026",
+        status: "Concluído",
+        responsible: "Samir Chehade",
+    },
+    {
+        code: "UC03",
+        name: "Gerenciar Produtos (Cadastro, Edição, Inativação)",
+        module: "Módulo 02: Catálogo de Produtos",
+        startDate: "24/04/2026",
+        endDate: "08/05/2026",
+        status: "Concluído",
+        responsible: "Samir Chehade",
+    },
+    {
+        code: "UC04",
+        name: "Registrar Entrada de Estoque (DB Transaction)",
+        module: "Módulo 03: Almoxarifado & Estoque",
+        startDate: "24/04/2026",
+        endDate: "15/05/2026",
+        status: "Concluído",
+        responsible: "Samir Chehade",
+    },
+    {
+        code: "UC05",
+        name: "Registrar Saída de Estoque (Lock Pessimista)",
+        module: "Módulo 03: Almoxarifado & Estoque",
+        startDate: "15/05/2026",
+        endDate: "30/05/2026",
+        status: "Concluído",
+        responsible: "Samir Chehade",
+    },
+    {
+        code: "UC06",
+        name: "Consultar Histórico de Movimentações",
+        module: "Módulo 03: Almoxarifado & Estoque",
+        startDate: "30/05/2026",
+        endDate: "10/06/2026",
+        status: "Concluído",
+        responsible: "Samir Chehade",
+    },
+    {
+        code: "UC07",
+        name: "Gerenciar Secretarias Municipais",
+        module: "Módulo 04: Administração do Sistema",
+        startDate: "18/04/2026",
+        endDate: "28/04/2026",
+        status: "Concluído",
+        responsible: "Samir Chehade",
+    },
+    {
+        code: "UC08",
+        name: "Gerenciar Usuários & Atribuição de Perfis RBAC",
+        module: "Módulo 04: Administração do Sistema",
+        startDate: "18/04/2026",
+        endDate: "10/05/2026",
+        status: "Concluído",
+        responsible: "Samir Chehade",
+    },
+    {
+        code: "UC09",
+        name: "Criar Pedido de Material (Diretor → Almoxarifado)",
+        module: "Módulo 05: Fluxo de Requisições",
+        startDate: "05/10/2026",
+        endDate: "16/10/2026",
+        status: "Planejado",
+        responsible: "Samir Chehade",
+    },
+    {
+        code: "UC10",
+        name: "Acompanhar / Editar Pedidos Próprios",
+        module: "Módulo 05: Fluxo de Requisições",
+        startDate: "19/10/2026",
+        endDate: "30/10/2026",
+        status: "Planejado",
+        responsible: "Samir Chehade",
+    },
+    {
+        code: "UC11",
+        name: "Aprovar / Rejeitar Pedidos de Material",
+        module: "Módulo 05: Fluxo de Requisições",
+        startDate: "03/11/2026",
+        endDate: "13/11/2026",
+        status: "Planejado",
+        responsible: "Samir Chehade",
+    },
+    {
+        code: "UC12",
+        name: "Soft Deletes em Todas as Entidades",
+        module: "Módulo 06: Integridade de Dados",
+        startDate: "16/11/2026",
+        endDate: "24/11/2026",
+        status: "Planejado",
+        responsible: "Samir Chehade",
+    },
+    {
+        code: "UC13",
+        name: "Visualizar Painel da Secretaria (Dashboard)",
+        module: "Módulo 04: Administração do Sistema",
+        startDate: "25/11/2026",
+        endDate: "30/11/2026",
+        status: "Planejado",
+        responsible: "Samir Chehade",
+    },
+];
+
+// ==========================================
+// DIAGRAMAS DESENVOLVIDOS (ITEM 4 DO EDITAL)
+// Todos os arquivos estão em:
+// public/images/axisgov/diagrams/
+// ==========================================
+interface DiagramItem {
+    id: string;
+    title: string;
+    type: "Classes" | "Sequência" | "Estados" | "DER / Entidade-Relacionamento" | "Casos de Uso" | "Implantação";
+    description: string;
+    imagePath: string;
+    previewCode: string;
+}
+
+const DIAGRAMS_DATA: DiagramItem[] = [
+    {
+        id: "casos-de-uso",
+        title: "Diagrama de Casos de Uso",
+        type: "Casos de Uso",
+        imagePath: "/images/axisgov/diagrams/UseCase Diagram0.png",
+        description:
+            "Diagrama UML completo com os 4 atores do AxisGov: Usuário (Login/Logout, Gerenciar Perfil), Administrador (8 casos de uso: Produtos, Estoque, Secretarias, Usuários, Pedidos), Diretor (Criar e Acompanhar Pedidos) e Secretário (Painel da Secretaria).",
+        previewCode: `Atores: Usuário, Administrador, Diretor, Secretário
+
+Usuário:
+  UC01 - Efetuar Login/Logout
+  UC02 - Gerenciar Perfil e Senha
+
+Administrador:
+  UC03 - Gerenciar Categorias
+  UC04 - Gerenciar Produtos
+  UC05 - Registrar Entrada de Estoque
+  UC06 - Registrar Saída de Estoque
+  UC07 - Consultar Histórico de Movimentações
+  UC08 - Gerenciar Secretarias
+  UC09 - Gerenciar Usuários
+  UC10 - Aprovar / Rejeitar Pedidos
+
+Diretor:
+  UC11 - Criar Pedido de Material
+  UC12 - Acompanhar / Editar Pedidos Próprios
+
+Secretário:
+  UC13 - Visualizar Painel da Secretaria`,
+    },
+    {
+        id: "classes",
+        title: "Diagrama de Classes (Domínio de Negócio)",
+        type: "Classes",
+        imagePath: "/images/axisgov/diagrams/Class Diagram0.png",
+        description:
+            "Estrutura OO completa: entidades User (com RoleEnum: ADMIN=1, SECRETARIO=2, DIRETOR=3, USER=4, RESPONSAVEL_ESTOQUE=5), Secretaria, Categoria, Produto, Movimentacao (com TipoMovimentacao: entrada/saida), Pedido (com StatusPedido: pendente/aprovado/rejeitado).",
+        previewCode: `class User {
+  +BigInt id
+  +String name, email, password, telefone
+  +BigInt secretaria_id
+  +roleLabel(role: int): String
+  +secretaria(): BelongsTo
+}
+class Produto {
+  +String codigo, nome
+  +int estoque_atual
+  +Decimal valor_unitario
+  +boolean ativo
+  +movimentacoes(): HasMany
+}
+class Movimentacao {
+  +TipoMovimentacao tipo  // entrada | saida
+  +int quantidade
+  +Date data_movimentacao
+  +String destino, observacoes
+}
+class Pedido {
+  +StatusPedido status  // pendente | aprovado | rejeitado
+  +int quantidade
+  +String observacao
+}`,
+    },
+    {
+        id: "sequencia-produto",
+        title: "Diagrama de Sequência: Gerenciar Produto",
+        type: "Sequência",
+        imagePath: "/images/axisgov/diagrams/Gerenciar Produto - Diagrama Sequencia.png",
+        description:
+            "Fluxo completo de Cadastrar e Deletar Produto: Responsável Estoque → Interface AxisGov → ProdutoController → Banco de Dados. Cobre cenários de dados válidos (HTTP 200 Sucesso), dados inválidos (HTTP 400 Erro) e exclusão com confirmação de status.",
+        previewCode: `sd Gerenciar Produto - Diagrama Sequencia
+
+Cadastrar Produto:
+  1: Acessar Menu Produtos()
+  1.1: Cadastrar Produto(Código, Produto, Categoria,
+       Estoque Inicial, Valor Unitário)
+  1.1.1: StoreProduto(Codigo, Produto, Categoria, Estoque, Status)
+  2: GetStatus(Status) <- Banco de Dados
+  [Dados Válidos]   → 3: Status 200 "Produto criado com sucesso"
+  [Dados Inválidos] → 4: Acessar Menu Produtos(Erro)
+  5: Retorna resultado(Sucesso ou Erro)
+
+Deletar Produto:
+  6: Acessar Menu Produtos()
+  6.1: Deletar Produto(Produto)
+  6.1.1: Destroy(Produto) → Status
+  [Sucesso] → 7: 200 "Produto deletado com sucesso"
+  [Erro]    → 8: 400 "Houve um erro ao deletar o produto"
+  9: Retorna resultado(Sucesso ou Erro)`,
+    },
+    {
+        id: "sequencia-usuario",
+        title: "Diagrama de Sequência: Gerenciar Usuário",
+        type: "Sequência",
+        imagePath: "/images/axisgov/diagrams/Gerenciar Usuario - Diagrama Sequencia.png",
+        description:
+            "Fluxo CRUD completo de Usuário realizado pelo Secretário: Adicionar (com verificação de duplicidade), Deletar (com consulta de existência) e Atualizar (com formulário de visualização e persistência). Cobre todos os cenários de erro 409, 400 e sucesso 200.",
+        previewCode: `sd Gerenciar Usuario - Diagrama Sequencia
+  Atores: Secretario, Interface AxisGov,
+          UserController, Banco de Dados
+
+Adicionar Usuário:
+  1.1: Cadastrar Novo Usuario(Nome, E-mail, Telefone, Senha)
+  [Usuario Já Existente] → 409 "Usuario já está cadastrado"
+  [Usuario Cadastrado]   → 200 "Usuario Cadastrado com Sucesso"
+  [Erro ao Cadastrar]    → 400 "Erro ao Cadastrar Novo Usuario"
+
+Deletar Usuário:
+  6.1: Deletar Usuario(Nome Completo)
+  [Usuario Não Existe] → 400 "Usuario Não Encontrado"
+  [Deletar Usuario]    → 200 "Usuario foi deletado com sucesso"
+
+Atualizar Usuário:
+  11→13: Visualizar → Preencher dados → Salvar()
+  13.1: EditarUsuario(dadosUsuario)
+  13.1.1: atualizar(dadosUsuario) → Usuário Atualizado`,
+    },
+    {
+        id: "sequencia-entrada",
+        title: "Diagrama de Sequência: Registrar Entrada de Estoque",
+        type: "Sequência",
+        imagePath: "/images/axisgov/diagrams/Registrar Entrada - Diagrama Sequencia.png",
+        description:
+            "Fluxo de registro de nova entrada de material no almoxarifado: Responsável Estoque → Interface AxisGov → EntradaController → Banco de Dados. Validação de dados com retorno HTTP 201 (sucesso) ou HTTP 400 (dados inválidos).",
+        previewCode: `sd Registrar Entrada - Diagrama Sequencia
+  Atores: Responsavel Estoque, Interface AxisGov,
+          EntradaController, Banco de Dados
+
+  1: Acessar Entrada()
+  1.1: NovaEntrada(Produto, Quantidade Entrada,
+       Data da Entrada, Observação)
+  1.1.1: StoreProduto(Codigo, Produto, Estoque, Status)
+  Retorna Status
+  [Dados Válidos]   → 201 "Entrada registrada com sucesso"
+  [Dados Inválidos] → 400 "Houve um erro ao registrar a entrada"
+  4: Retorna resultado(Sucesso ou Erro)`,
+    },
+    {
+        id: "estados-pedido",
+        title: "Diagrama de Estados: Ciclo de Vida do Pedido",
+        type: "Estados",
+        imagePath: "/images/axisgov/diagrams/Pedido-Secretaria.png",
+        description:
+            "Máquina de estados formal do Pedido de Material no AxisGov: DashboardUsuario → [Solicita material] → PedidoPendenteSecretaria → [Aprovação] → PedidoAprovado → [Realiza a entrega] → Entregue / [Rejeição] → PedidoRejeitado → Encerra Sistema.",
+        previewCode: `stm Pedido-Secretaria
+
+[*] --> DashboardUsuario
+DashboardUsuario --> PedidoPendenteSecretaria
+  : Solicita material
+
+PedidoPendenteSecretaria --> PedidoAprovado
+  : Aprovação (Admin)
+PedidoPendenteSecretaria --> PedidoRejeitado
+  : Rejeição (Admin)
+
+PedidoAprovado --> Entregue
+  : Realiza a entrega
+
+Entregue --> [*] : Encerra Sistema
+PedidoRejeitado --> [*] : Encerra Sistema`,
+    },
+    {
+        id: "der",
+        title: "Diagrama de Entidade-Relacionamento (DER)",
+        type: "DER / Entidade-Relacionamento",
+        imagePath: "/images/axisgov/diagrams/Diagrama_DER.png",
+        description:
+            "Modelagem completa do banco de dados do AxisGov: entidades Usuário, Secretaria, Permissao, Produto, Estoque, Movimentacao_estoque, Pedido (Solicitacao_Material e Solicitacao_Produto), Centro_Custo, Recebimento_Material, Relatorio, Requisicao e Item_Requisicao. Normalizado em 3FN.",
+        previewCode: `TABLE usuarios (id_usuario BIGINT PK, nome, email,
+  senha, telefone, ativo BOOLEAN,
+  tipo_usuario BIGINT FK);
+
+TABLE produtos (id_produto BIGINT PK,
+  nome, codigo INTEGER, categoria_id,
+  estoque_atual INTEGER, valor_unitario DECIMAL,
+  ativo BOOLEAN);
+
+TABLE estoque (id_estoque BIGINT PK,
+  quantidade INTEGER, estoque_minimo DECIMAL,
+  estoque_maximo DECIMAL, ultima_atualizacao,
+  id_produto BIGINT FK);
+
+TABLE movimentacao_estoque (id_movimentacao BIGINT PK,
+  tipo VARCHAR, quantidade INTEGER,
+  data TIMESTAMP, observacao, id_estoque FK,
+  id_usuario FK);
+
+TABLE solicitacao_material (id_solicitacao BIGINT PK,
+  data_solicitacao, status VARCHAR,
+  justificativa, id_usuario FK);`,
+    },
+    {
+        id: "implantacao",
+        title: "Diagrama de Implantação (Deployment)",
+        type: "Implantação",
+        imagePath: "/images/axisgov/diagrams/Deployment Diagram0.png",
+        description:
+            "Arquitetura de implantação do AxisGov: Dispositivo Cliente (Web Browser) → HTTP → Servidor (Laravel/PHP com Blade) → TCP/IP PostgreSQL → Banco de Dados PostgreSQL. Ambiente monolítico com server-side rendering via Blade e persistência relacional.",
+        previewCode: `<<device>> Dispositivo Cliente
+  Web Browser
+    --[HTTP]--> Server
+
+<<server>> Server
+  <<executionEnvironment>> Laravel / PHP
+    <<executionEnvironment>> Blade
+  --[TCP/IP PostgreSQL]--> Database
+
+<<database>> Database
+  Postgres`,
     },
 ];
 
@@ -229,31 +641,35 @@ function RealSystemScreen({ type }: { type: CaseStudy["screenType"] }) {
                         <div className="gov-seal">
                             <Icon name="shield" size={28} />
                         </div>
-                        <h3>Portal de Governança</h3>
-                        <p>Acesso restrito a servidores e auditores autorizados pelo Tribunal de Contas.</p>
+                        <h3>AxisGov • Acesso Seguro</h3>
+                        <p>Plataforma Integrada de Gestão Pública Municipal. Controle de acesso por perfil (RBAC).</p>
                         <div className="cert-badge">
                             <span className="cert-dot" />
-                            <span>Ambiente Homologado ICP-Brasil</span>
+                            <span>Sessão Protegida • Laravel Sanctum</span>
                         </div>
                     </div>
                     <div className="auth-panel-right">
                         <div className="auth-card-mock">
-                            <span className="mock-label">AUTENTICAÇÃO ÚNICA</span>
-                            <h4 className="mock-title">Identificação do Servidor</h4>
+                            <span className="mock-label">PORTAL INSTITUCIONAL • AUTENTICAÇÃO</span>
+                            <h4 className="mock-title">Identificação do Usuário</h4>
                             <div className="mock-field">
-                                <label>Matrícula Funcional / CPF</label>
-                                <div className="mock-input">GOV-2024-89104</div>
+                                <label>E-mail Institucional</label>
+                                <div className="mock-input">admin@axisgov.pr.gov.br</div>
                             </div>
                             <div className="mock-field">
-                                <label>Token de Segurança (TOTP)</label>
-                                <div className="mock-input code-dots">● ● ● ● ● ●</div>
+                                <label>Senha de Acesso</label>
+                                <div className="mock-input code-dots">● ● ● ● ● ● ● ●</div>
+                            </div>
+                            <div className="mock-field">
+                                <label>Perfil de Acesso (RBAC)</label>
+                                <div className="mock-input text-blue font-bold">Administrador do Sistema (Nível 1)</div>
                             </div>
                             <div className="mock-btn-row">
-                                <div className="mock-btn primary">Validar Credencial</div>
-                                <div className="mock-btn secondary">Certificado Digital A1/A3</div>
+                                <div className="mock-btn primary">Acessar Painel</div>
+                                <div className="mock-btn secondary">Alterar Senha</div>
                             </div>
                             <div className="mock-footer-sec">
-                                <span>Conexão TLS 1.3 • Hash da Sessão: 0x9f2a...88c1</span>
+                                <span>Middleware Auth • Restrição de Inativos (ativo = true)</span>
                             </div>
                         </div>
                     </div>
@@ -267,51 +683,55 @@ function RealSystemScreen({ type }: { type: CaseStudy["screenType"] }) {
             <div className="sys-screen dash-screen">
                 <div className="dash-top-bar">
                     <div className="dash-heading">
-                        <span className="dash-pill">ORÇAMENTO 2024</span>
-                        <h4>Painel Geral de Execução Orçamentária & Fiscal</h4>
+                        <span className="dash-pill">MÓDULO DE PEDIDOS</span>
+                        <h4>Requisições de Material entre Secretarias & Almoxarifado</h4>
                     </div>
                     <div className="dash-actions">
-                        <span className="dash-filter">Exercício: 2024 (Consolidado)</span>
+                        <span className="dash-filter">Aprovação Pendente (Admin)</span>
                     </div>
                 </div>
 
                 <div className="dash-kpi-row">
                     <div className="dash-stat">
-                        <span className="stat-label">Dotação Inicial Aprovada</span>
-                        <span className="stat-val">R$ 142.800.000,00</span>
-                        <span className="stat-sub">Lei Orçamentária Anual</span>
+                        <span className="stat-label">Pedidos Pendentes</span>
+                        <span className="stat-val text-amber">04</span>
+                        <span className="stat-sub">Aguardando Avaliação</span>
                     </div>
                     <div className="dash-stat">
-                        <span className="stat-label">Despesas Empenhadas</span>
-                        <span className="stat-val text-blue">R$ 118.420.350,00</span>
-                        <span className="stat-sub">82.9% do Orçamento</span>
+                        <span className="stat-label">Pedidos Aprovados</span>
+                        <span className="stat-val text-green">28</span>
+                        <span className="stat-sub">Liberados para Entrega</span>
                     </div>
                     <div className="dash-stat">
-                        <span className="stat-label">Despesas Liquidadas</span>
-                        <span className="stat-val text-green">R$ 98.710.200,00</span>
-                        <span className="stat-sub">Serviços e Bens Entregues</span>
+                        <span className="stat-label">Pedidos Rejeitados</span>
+                        <span className="stat-val text-muted">02</span>
+                        <span className="stat-sub">Com Devolutiva Formal</span>
                     </div>
                 </div>
 
                 <div className="dash-table-wrap">
                     <div className="dash-table-head">
-                        <span>UNIDADE GESTORA</span>
-                        <span>DOTAÇÃO</span>
-                        <span>EMPENHADO</span>
-                        <span>STATUS FISCAL</span>
+                        <span>PEDIDO #</span>
+                        <span>SOLICITANTE / SECRETARIA</span>
+                        <span>PRODUTO REQUISITADO</span>
+                        <span>QTD</span>
+                        <span>STATUS</span>
                     </div>
                     {[
-                        { sec: "02.01 — Secretaria de Saúde Pública", dot: "R$ 48.200.000", emp: "R$ 44.110.000", st: "REGULAR" },
-                        { sec: "02.02 — Secretaria de Educação Básica", dot: "R$ 39.500.000", emp: "R$ 36.890.000", st: "REGULAR" },
-                        { sec: "02.03 — Secretaria de Obras e Infraestrutura", dot: "R$ 28.100.000", emp: "R$ 19.420.000", st: "AUDITORIA" },
-                        { sec: "02.04 — Secretaria de Tecnologia e Gestão", dot: "R$ 14.000.000", emp: "R$ 12.850.000", st: "REGULAR" },
+                        { num: "PED-2026-088", solicitante: "Diretoria Escolar • Sec. Educação", prod: "Papel A4 75g (Resma 500fls)", qtd: "50 cx", st: "PENDENTE" },
+                        { num: "PED-2026-087", solicitante: "UPA Central • Sec. Saúde", prod: "Álcool em Gel 70% 5L", qtd: "20 gal", st: "APROVADO" },
+                        { num: "PED-2026-086", solicitante: "Fiscalização • Sec. Obras", prod: "Prancheta Acrílica Ofício", qtd: "15 un", st: "APROVADO" },
+                        { num: "PED-2026-085", solicitante: "Gabinete • Sec. Administração", prod: "Toner HP Laser Jet 85A", qtd: "04 un", st: "REJEITADO" },
                     ].map((row, i) => (
                         <div className="dash-table-row" key={i}>
-                            <span className="font-bold">{row.sec}</span>
-                            <span>{row.dot}</span>
-                            <span className="font-mono">{row.emp}</span>
+                            <span className="font-mono font-bold text-blue">{row.num}</span>
+                            <span>{row.solicitante}</span>
+                            <span>{row.prod}</span>
+                            <span className="font-mono">{row.qtd}</span>
                             <span>
-                                <span className={`table-badge ${row.st === "REGULAR" ? "green" : "amber"}`}>{row.st}</span>
+                                <span className={`table-badge ${row.st === "APROVADO" ? "green" : row.st === "PENDENTE" ? "amber" : "blue"}`}>
+                                    {row.st}
+                                </span>
                             </span>
                         </div>
                     ))}
@@ -325,59 +745,66 @@ function RealSystemScreen({ type }: { type: CaseStudy["screenType"] }) {
             <div className="sys-screen pat-screen">
                 <div className="dash-top-bar">
                     <div className="dash-heading">
-                        <span className="dash-pill">DEPARTAMENTO DE PATRIMÔNIO</span>
-                        <h4>Registro Geral de Bens Tombados (Inventário Permanente)</h4>
+                        <span className="dash-pill">ADMINISTRAÇÃO GERAL</span>
+                        <h4>Gestão de Secretarias Municipais & Matriz de Usuários</h4>
                     </div>
                     <div className="dash-actions">
-                        <span className="dash-filter">28.450 Ativos Registrados</span>
+                        <span className="dash-filter">34 Usuários • 6 Secretarias</span>
                     </div>
                 </div>
 
                 <div className="pat-table-wrap">
                     <div className="dash-table-head">
-                        <span>TOMBO</span>
-                        <span>DESCRIÇÃO DO ATIVO</span>
-                        <span>LOCALIZAÇÃO</span>
-                        <span>VALOR CONTÁBIL</span>
-                        <span>CONSERVAÇÃO</span>
+                        <span>ID / MAT.</span>
+                        <span>USUÁRIO / SERVIDOR</span>
+                        <span>SECRETARIA VINCULADA</span>
+                        <span>PERFIL RBAC</span>
+                        <span>SITUAÇÃO</span>
                     </div>
                     {[
                         {
-                            tombo: "TMB-0028410",
-                            desc: "Servidor Blade Enterprise Dell PowerEdge R750 64GB",
-                            loc: "Datacenter Central • Rack 04",
-                            val: "R$ 68.900,00",
-                            st: "EXCELENTE",
+                            id: "USR-001",
+                            nome: "Carlos Eduardo Mendes",
+                            email: "carlos.mendes@axisgov.pr.gov.br",
+                            sec: "Secretaria Geral de Administração",
+                            role: "ADMINISTRADOR",
+                            st: "ATIVO",
                         },
                         {
-                            tombo: "TMB-0028409",
-                            desc: "Microcomputador Estação de Trabalho Core i7 32GB",
-                            loc: "Secretaria de Finanças • Gabinete",
-                            val: "R$ 5.420,00",
-                            st: "BOM",
+                            id: "USR-004",
+                            nome: "Dra. Mariana Vasconcelos",
+                            email: "mariana.saude@axisgov.pr.gov.br",
+                            sec: "Secretaria Municipal de Saúde",
+                            role: "SECRETÁRIO",
+                            st: "ATIVO",
                         },
                         {
-                            tombo: "TMB-0028408",
-                            desc: "Veículo Utilitário Ambulância UTI Móvel Sprinter",
-                            loc: "Hospital Regional • Garagem 01",
-                            val: "R$ 385.000,00",
-                            st: "EM OPERAÇÃO",
+                            id: "USR-009",
+                            nome: "Prof. Roberto Alcantara",
+                            email: "roberto.escola@axisgov.pr.gov.br",
+                            sec: "Secretaria Municipal de Educação",
+                            role: "DIRETOR",
+                            st: "ATIVO",
                         },
                         {
-                            tombo: "TMB-0028407",
-                            desc: "Aparelho de Ultrassonografia Digital Diagnóstica",
-                            loc: "Centro de Saúde Central • Sala 03",
-                            val: "R$ 142.000,00",
-                            st: "MANUTENÇÃO PREV.",
+                            id: "USR-014",
+                            nome: "Valmir Ferreira dos Santos",
+                            email: "valmir.estoque@axisgov.pr.gov.br",
+                            sec: "Almoxarifado Central",
+                            role: "RESPONSÁVEL ESTOQUE",
+                            st: "ATIVO",
                         },
                     ].map((item) => (
-                        <div className="dash-table-row" key={item.tombo}>
-                            <span className="font-mono text-blue font-bold">{item.tombo}</span>
-                            <span>{item.desc}</span>
-                            <span className="text-muted">{item.loc}</span>
-                            <span className="font-mono">{item.val}</span>
+                        <div className="dash-table-row" key={item.id}>
+                            <span className="font-mono text-blue font-bold">{item.id}</span>
+                            <div>
+                                <strong className="font-bold">{item.nome}</strong>
+                                <div className="text-muted" style={{ fontSize: "11px" }}>{item.email}</div>
+                            </div>
+                            <span className="text-muted">{item.sec}</span>
+                            <span className="font-mono text-blue">{item.role}</span>
                             <span>
-                                <span className="table-badge blue">{item.st}</span>
+                                <span className="table-badge green">{item.st}</span>
                             </span>
                         </div>
                     ))}
@@ -392,44 +819,44 @@ function RealSystemScreen({ type }: { type: CaseStudy["screenType"] }) {
             <div className="dash-top-bar">
                 <div className="dash-heading">
                     <span className="dash-pill">ALMOXARIFADO CENTRAL</span>
-                    <h4>Controle de Estoque & Movimentações de Suprimentos</h4>
+                    <h4>Catálogo de Produtos & Controle de Saldo de Insumos</h4>
                 </div>
                 <div className="dash-actions">
-                    <span className="dash-filter">Curva ABC • Giro Contínuo</span>
+                    <span className="dash-filter">Validação Atômica (DB::transaction)</span>
                 </div>
             </div>
 
             <div className="est-grid-cards">
                 <div className="est-card-item">
-                    <span className="est-code font-mono">SKU-MED-8841</span>
-                    <h5>Medicamento Antimicrobiano Injetável 500mg</h5>
+                    <span className="est-code font-mono">COD-1042 • MAT. EXPEDIENTE</span>
+                    <h5>Papel Sulfite A4 75g (Caixa c/ 10 resmas)</h5>
                     <div className="est-bar-wrap">
-                        <div className="est-bar-fill" style={{ width: "82%" }} />
+                        <div className="est-bar-fill" style={{ width: "78%" }} />
                     </div>
                     <div className="est-meta-row">
-                        <span>Estoque: 4.820 un.</span>
-                        <span className="text-green font-bold">Acima do Mínimo</span>
+                        <span>Saldo: 450 caixas</span>
+                        <span className="text-green font-bold">Saldo Adequado</span>
                     </div>
                 </div>
                 <div className="est-card-item">
-                    <span className="est-code font-mono">SKU-EPI-9902</span>
-                    <h5>Luvas Cirúrgicas Nitrílicas Estéreis (Caixa c/ 100)</h5>
+                    <span className="est-code font-mono">COD-2015 • SAÚDE & HIGIENE</span>
+                    <h5>Álcool em Gel 70% Hospitalar 5 Litros</h5>
                     <div className="est-bar-wrap">
-                        <div className="est-bar-fill alert" style={{ width: "24%" }} />
+                        <div className="est-bar-fill alert" style={{ width: "22%" }} />
                     </div>
                     <div className="est-meta-row">
-                        <span>Estoque: 310 cx.</span>
-                        <span className="text-amber font-bold">Ponto de Pedido</span>
+                        <span>Saldo: 38 galões</span>
+                        <span className="text-amber font-bold">Ponto de Reposição</span>
                     </div>
                 </div>
                 <div className="est-card-item">
-                    <span className="est-code font-mono">SKU-MAT-1049</span>
-                    <h5>Papel A4 Reciclado 75g (Resma c/ 500 folhas)</h5>
+                    <span className="est-code font-mono">COD-1088 • INFORMÁTICA</span>
+                    <h5>Cartucho de Toner HP Laser Jet 85A</h5>
                     <div className="est-bar-wrap">
                         <div className="est-bar-fill" style={{ width: "65%" }} />
                     </div>
                     <div className="est-meta-row">
-                        <span>Estoque: 1.250 resmas</span>
+                        <span>Saldo: 24 unidades</span>
                         <span className="text-green font-bold">Regular</span>
                     </div>
                 </div>
@@ -439,10 +866,12 @@ function RealSystemScreen({ type }: { type: CaseStudy["screenType"] }) {
 }
 
 // ==========================================
-// COMPONENTE PRINCIPAL
+// COMPONENTE PRINCIPAL (HOME DO PORTFÓLIO)
 // ==========================================
 export default function Home() {
     const [activeCase, setActiveCase] = useState<number>(0);
+    const [activeDiagram, setActiveDiagram] = useState<DiagramItem | null>(null);
+    const [activeVideoModal, setActiveVideoModal] = useState<{ src: string; title: string; desc: string } | null>(null);
     const observerRef = useRef<IntersectionObserver | null>(null);
 
     // Efeito de scroll suave e detecção sticky
@@ -486,39 +915,41 @@ export default function Home() {
     return (
         <>
             <Head>
-                <title>AxisGov — Sistema Integrado de Gestão Pública & Governança</title>
+                <title>AxisGov — Portfólio de Estágio • UniFil</title>
                 <meta
                     name="description"
-                    content="Apresentação institucional da plataforma AxisGov. Engenharia de software para o setor público desenvolvida com Laravel 11, React 19, TypeScript e PostgreSQL."
+                    content="Avaliação Bimestral de Estágio Supervisionado — UniFil. Portfólio oficial do projeto AxisGov desenvolvido em Laravel 11, React 19, TypeScript e PostgreSQL."
                 />
             </Head>
 
             <div className="gov-site">
                 {/* ==========================================
-                    BARRA INSTITUCIONAL SUPERIOR (PADRÃO GOV)
+                    BARRA INSTITUCIONAL SUPERIOR UNIFIL
                    ========================================== */}
                 <div className="gov-topbar">
                     <div className="gov-container topbar-flex">
                         <div className="gov-topbar-left">
                             <span className="gov-flag-mark" />
-                            <span className="gov-topbar-title">PORTAL OFICIAL DE ENGENHARIA DE SOFTWARE & GESTÃO</span>
+                            <span className="gov-topbar-title">
+                                <strong>UniFil</strong> — CENTRO UNIVERSITÁRIO FILADÉLFIA • AVALIAÇÃO BIMESTRAL DE ESTÁGIO (ENTREGA: 14/09)
+                            </span>
                         </div>
                         <div className="gov-topbar-right">
-                            <span className="topbar-link">Acesso à Informação</span>
+                            <span className="topbar-link">10,0 Pontos</span>
                             <span className="topbar-sep">/</span>
-                            <span className="topbar-link">Transparência Ativa</span>
+                            <span className="topbar-link">Engenharia de Software</span>
                             <span className="topbar-sep">/</span>
-                            <span className="topbar-link">Auditoria Interna</span>
+                            <span className="topbar-link">Ano Letivo 2024</span>
                         </div>
                     </div>
                 </div>
 
                 {/* ==========================================
-                    HEADER PRINCIPAL
+                    HEADER PRINCIPAL (NAVEGAÇÃO PELOS 7 ITENS DO EDITAL)
                    ========================================== */}
                 <header className="gov-header">
                     <div className="gov-container header-flex">
-                        <a href="#inicio" className="gov-brand">
+                        <a href="#1-pagina-inicial" className="gov-brand">
                             <div className="gov-brand-icon">
                                 <Icon name="shield" size={20} />
                             </div>
@@ -526,26 +957,30 @@ export default function Home() {
                                 <span className="brand-name">
                                     Axis<strong>Gov</strong>
                                 </span>
-                                <span className="brand-tagline">SISTEMA INTEGRADO DE GESTÃO PÚBLICA</span>
+                                <span className="brand-tagline">PORTFÓLIO DE ESTÁGIO SUPERVISIONADO</span>
                             </div>
                         </a>
 
                         <nav className="gov-nav">
-                            <a href="#inicio" className="gov-nav-link">Início</a>
-                            <a href="#visao-geral" className="gov-nav-link">Visão Geral</a>
-                            <a href="#casos-de-uso" className="gov-nav-link">Casos de Uso</a>
-                            <a href="#interfaces" className="gov-nav-link">Interfaces do Sistema</a>
-                            <a href="#tecnologias" className="gov-nav-link">Engenharia & Stack</a>
-                            <a href="#especificacao" className="gov-nav-btn">Especificação Técnica</a>
+                            <a href="#1-pagina-inicial" className="gov-nav-link">1. Início</a>
+                            <a href="#2-sobre-o-projeto" className="gov-nav-link">2. Sobre o Projeto</a>
+                            <a href="#3-casos-e-cronograma" className="gov-nav-link">3. Casos & Cronograma</a>
+                            <a href="#4-documentacao" className="gov-nav-link">4. Documentação</a>
+                            <a href="#5-telas-e-video" className="gov-nav-link">5. Telas & Vídeo</a>
+                            <a href="#6-relatorio-estagio" className="gov-nav-link">6. Relatório</a>
+                            <a href="#7-identificacao-aluno" className="gov-nav-btn">7. Identificação</a>
                         </nav>
                     </div>
                 </header>
 
                 <main>
                     {/* ==========================================
-                        HERO SECTION: ISOMÉTRICA & PESO INSTITUCIONAL
+                        ITEM 1 DO EDITAL: PÁGINA INICIAL
+                        - Nome do projeto
+                        - Objetivo do sistema
+                        - Breve descrição do projeto
                        ========================================== */}
-                    <section id="inicio" className="hero-institutional">
+                    <section id="1-pagina-inicial" className="hero-institutional">
                         {/* TEXTURAS TÉCNICAS DE FUNDO (GRID & TOPOGRAFIA) */}
                         <div className="hero-blueprint-grid" />
                         <div className="hero-topographic-lines" />
@@ -584,43 +1019,39 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                             <div className="hero-content">
                                 <div className="hero-seal-badge">
                                     <span className="seal-dot" />
-                                    <span>PADRÃO GOVERNAMENTAL DE ALTA FIDELIDADE</span>
+                                    <span>ESTRUTURA OBRIGATÓRIA 1 • PÁGINA INICIAL DO SISTEMA</span>
                                 </div>
 
                                 <h1 className="hero-title">
-                                    A robustez da gestão pública com a precisão da engenharia de ponta.
+                                    AxisGov
                                 </h1>
 
-                                <p className="hero-lead">
-                                    O <strong>AxisGov</strong> substitui o modelo fragmentado de sistemas administrativos
-                                    por uma plataforma monolítica moderna construída em <strong>Laravel 11, React 19 e PostgreSQL</strong>.
-                                    Desenvolvido sob preceitos rígidos de auditoria, rastreabilidade fiscal e resposta sub-100ms.
-                                </p>
-
-                                <div className="hero-meta-bar">
-                                    <div className="meta-stat">
-                                        <strong>100%</strong>
-                                        <span>Rastreabilidade Contábil</span>
-                                    </div>
-                                    <div className="meta-sep" />
-                                    <div className="meta-stat">
-                                        <strong>Art. 48</strong>
-                                        <span>Lei de Resp. Fiscal (LRF)</span>
-                                    </div>
-                                    <div className="meta-sep" />
-                                    <div className="meta-stat">
-                                        <strong>Zero Reload</strong>
-                                        <span>Single Page App com Inertia</span>
-                                    </div>
+                                <div className="hero-objective-box">
+                                    <span className="obj-tag">OBJETIVO DO SISTEMA:</span>
+                                    <p>
+                                        Centralizar, organizar e auditar os processos administrativos, controle de patrimônio público,
+                                        gestão de suprimentos em almoxarifados e execução orçamentária fiscal, garantindo conformidade estrita
+                                        com a Lei de Responsabilidade Fiscal e diretrizes de transparência pública.
+                                    </p>
                                 </div>
 
+                                <p className="hero-lead">
+                                    <strong>Breve descrição do projeto:</strong> O AxisGov é uma plataforma corporativa desenvolvida durante o estágio supervisionado,
+                                    utilizando o ecossistema 
+                                </p>
+
                                 <div className="hero-cta-actions">
-                                    <a href="#casos-de-uso" className="btn-gov primary">
-                                        <span>Explorar Módulos Operacionais</span>
+                                    <a href="#3-casos-e-cronograma" className="btn-gov primary">
+                                        <span>Casos de Uso & Cronograma</span>
                                         <Icon name="arrow" size={14} />
                                     </a>
-                                    <a href="#interfaces" className="btn-gov outline">
-                                        <span>Visualizar Telas Reais</span>
+                                    <a href="#5-telas-e-video" className="btn-gov outline">
+                                        <Icon name="video" size={14} />
+                                        <span>Evidências & Telas</span>
+                                    </a>
+                                    <a href="#6-relatorio-estagio" className="btn-gov outline">
+                                        <Icon name="file" size={14} />
+                                        <span>PDF do Relatório</span>
                                     </a>
                                 </div>
                             </div>
@@ -638,66 +1069,20 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                                             </div>
                                             <div className="browser-url-iso">
                                                 <Icon name="lock" size={11} className="text-green" />
-                                                <span>axisgov.local / painel-geral / orcamento-fiscal</span>
+                                                <span>axisgov.local / painel-geral</span>
                                             </div>
                                             <div className="browser-status-iso">
                                                 <span className="status-live-badge">SISTEMA ATIVO</span>
                                             </div>
                                         </div>
 
-                                        {/* PAINEL REAL DE ALTA DENSIDADE */}
-                                        <div className="browser-body-iso">
-                                            <div className="iso-kpi-grid">
-                                                <div className="iso-kpi-card">
-                                                    <span className="iso-kpi-tag">DOTAÇÃO ORÇAMENTÁRIA</span>
-                                                    <span className="iso-kpi-val">R$ 142.800.000</span>
-                                                    <span className="iso-kpi-trend">LOA Consolidada 2024</span>
-                                                </div>
-                                                <div className="iso-kpi-card highlight">
-                                                    <span className="iso-kpi-tag">LIQUIDAÇÃO FISCAL</span>
-                                                    <span className="iso-kpi-val">89.4%</span>
-                                                    <span className="iso-kpi-trend">Em Conformidade TCE</span>
-                                                </div>
-                                                <div className="iso-kpi-card">
-                                                    <span className="iso-kpi-tag">BENS TOMBADOS</span>
-                                                    <span className="iso-kpi-val">28.450</span>
-                                                    <span className="iso-kpi-trend">Inventário 100% Ativo</span>
-                                                </div>
-                                            </div>
-
-                                            <div className="iso-table-mock">
-                                                <div className="iso-tr iso-th">
-                                                    <span>PROTOCOLO</span>
-                                                    <span>DESCRIÇÃO ADMINISTRATIVA</span>
-                                                    <span>SECRETARIA</span>
-                                                    <span>STATUS</span>
-                                                </div>
-                                                <div className="iso-tr">
-                                                    <span className="font-mono text-blue font-bold">#PRC-2024-8841</span>
-                                                    <span>Aquisição de Infraestrutura de Servidores Blade</span>
-                                                    <span>Tecnologia</span>
-                                                    <span className="badge-pill green">DEFERIDO</span>
-                                                </div>
-                                                <div className="iso-tr">
-                                                    <span className="font-mono text-blue font-bold">#PRC-2024-8840</span>
-                                                    <span>Reforma e Adequação do Hospital Regional</span>
-                                                    <span>Saúde</span>
-                                                    <span className="badge-pill blue">EM ANÁLISE</span>
-                                                </div>
-                                                <div className="iso-tr">
-                                                    <span className="font-mono text-blue font-bold">#PRC-2024-8839</span>
-                                                    <span>Inventário Anual de Veículos e Almoxarifado</span>
-                                                    <span>Patrimônio</span>
-                                                    <span className="badge-pill green">CONCLUÍDO</span>
-                                                </div>
-                                            </div>
-
-                                            <div className="iso-footer-bar">
-                                                <span className="font-mono text-xs text-muted">
-                                                    Sessão: GOV-89410 • Protocolo TLS 1.3 • Hash: 0x8f19c42
-                                                </span>
-                                                <span className="iso-latency-pill">Latência: 42ms</span>
-                                            </div>
+                                        {/* TELA REAL DO AXISGOV */}
+                                        <div className="browser-body-iso real-image-body">
+                                            <img
+                                                src="/images/axisgov/dashboard-real.png"
+                                                alt="Painel Geral do AxisGov - Gestão Municipal"
+                                                className="real-system-screenshot"
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -706,66 +1091,122 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     </section>
 
                     {/* ==========================================
-                        VISÃO GERAL: MINIMALISMO UTILITÁRIO & ESPAÇO NEGATIVO
+                        ITEM 2 DO EDITAL: SOBRE O PROJETO
+                        - Problema que o sistema busca resolver
+                        - Tecnologias utilizadas
+                        - Arquitetura ou descrição resumida da solução
                        ========================================== */}
-                    <section id="visao-geral" className="section-utilitarian">
+                    <section id="2-sobre-o-projeto" className="section-utilitarian">
                         <div className="gov-container">
                             <div className="util-header">
-                                <span className="util-kicker">01 / VISÃO GERAL</span>
+                                <span className="util-kicker">ESTRUTURA OBRIGATÓRIA 2 / SOBRE O PROJETO</span>
                                 <h2 className="util-title">
-                                    Tecnologia concebida para governar com rigor, sem concessões estéticas.
+                                    Diagnóstico do Problema, Escolhas Tecnológicas & Arquitetura da Solução.
                                 </h2>
                                 <p className="util-lead">
-                                    Abandonamos o padrão de caixas genéricas com sombras suaves. O AxisGov orienta-se pela
-                                    tipografia funcional, alto contraste e espaço negativo que valorizam a tomada de decisão
-                                    e o dever constitucional de transparência.
+                                    O AxisGov nasceu da necessidade prática identificada durante as atividades de estágio,
+                                    onde processos públicos sofrem com perda de dados, lentidão na tramitação e risco fiscal.
                                 </p>
                             </div>
 
-                            {/* ITENS SOLTOS SEM CAIXAS BRANCAS, GUIADOS POR TIPOGRAFIA E LINHAS SÓLIDAS */}
-                            <div className="util-pillars-grid">
-                                <div className="util-pillar">
-                                    <span className="pillar-num">01.1</span>
-                                    <h3 className="pillar-heading">Segregação de Competências</h3>
-                                    <p className="pillar-body">
-                                        Nenhum ato administrativo de alto impacto — seja liquidação financeira ou baixa patrimonial —
-                                        é operado por uma única chave. Implementamos o princípio da segregação de funções integrado
-                                        ao RBAC em tempo de banco de dados.
-                                    </p>
-                                    <div className="pillar-meta">
-                                        <span>ISO 27001</span>
-                                        <span>Controle Interno</span>
-                                        <span>Princípio da Impessoalidade</span>
+                            {/* 2.1 PROBLEMA QUE O SISTEMA BUSCA RESOLVER */}
+                            <div className="problem-statement-box">
+                                <div className="problem-header">
+                                    <Icon name="alertCircle" size={20} className="text-amber" />
+                                    <h3>2.1 O Problema que o Sistema Busca Resolver</h3>
+                                </div>
+                                <div className="problem-grid">
+                                    <div className="problem-card">
+                                        <h4>Fragmentação & Descontrole</h4>
+                                        <p>
+                                            Órgãos públicos operavam com controles em planilhas dispersas e arquivos físicos,
+                                            resultando em extravio de tombos patrimoniais, divergências no inventário de suprimentos e falhas na prestação de contas.
+                                        </p>
+                                    </div>
+                                    <div className="problem-card">
+                                        <h4>Morosidade e Falta de Trilha</h4>
+                                        <p>
+                                            Ausência de uma trilha confiável de auditoria, impossibilitando apurar a autoria e data
+                                            exata de alterações em empenhos ou baixas de bens, gerando inconformidades frequentes junto ao Tribunal de Contas.
+                                        </p>
+                                    </div>
+                                    <div className="problem-card">
+                                        <h4>Sistemas Legados com Recarregamento Lento</h4>
+                                        <p>
+                                            Sistemas antigos baseados em formulários com recarregamento total de página causavam perda de digitação,
+                                            quedas constantes de sessão e baixa produtividade dos servidores públicos em expediente contínuo.
+                                        </p>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div className="util-pillar">
-                                    <span className="pillar-num">01.2</span>
-                                    <h3 className="pillar-heading">Trilha de Auditoria Imutável</h3>
-                                    <p className="pillar-body">
-                                        Cada evento de criação ou modificação gera uma assinatura atômica no PostgreSQL.
-                                        Triggers de banco impedem fisicamente atualizações ou exclusões retroativas, garantindo
-                                        a integridade exigida pelos Tribunais de Contas.
-                                    </p>
-                                    <div className="pillar-meta">
-                                        <span>Append-Only Ledger</span>
-                                        <span>Assinatura Digital</span>
-                                        <span>Lei de Acesso à Informação</span>
+                            {/* 2.2 TECNOLOGIAS UTILIZADAS (ESTILO BRUTALISTA) */}
+                            <div className="tech-section-wrapper">
+                                <h3 className="section-inner-heading">2.2 Tecnologias Utilizadas na Construção do Sistema</h3>
+                                <div className="brutalist-tech-grid">
+                                    <div className="brutalist-tech-item">
+                                        <div className="tech-solid-line" />
+                                        <span className="tech-category">FRAMEWORK DE BACKEND</span>
+                                        <h4 className="tech-main-name">LARAVEL 11</h4>
+                                        <p className="tech-description">
+                                            Framework PHP 8.4 orientado a Clean Architecture, injeção de dependência e Eloquent ORM com queries otimizadas.
+                                        </p>
+                                    </div>
+
+                                    <div className="brutalist-tech-item">
+                                        <div className="tech-solid-line" />
+                                        <span className="tech-category">SPA REATIVO & TIPAGEM</span>
+                                        <h4 className="tech-main-name">REACT 19 + TS</h4>
+                                        <p className="tech-description">
+                                            Interface componentizada com TypeScript estrito, garantindo zero erros de tipo e rendering atômico.
+                                        </p>
+                                    </div>
+
+                                    <div className="brutalist-tech-item">
+                                        <div className="tech-solid-line" />
+                                        <span className="tech-category">BANCO DE DADOS ACID</span>
+                                        <h4 className="tech-main-name">POSTGRESQL 16</h4>
+                                        <p className="tech-description">
+                                            Persistência relacional com integridade referencial, particionamento e triggers para trilha de auditoria Write-Once.
+                                        </p>
+                                    </div>
+
+                                    <div className="brutalist-tech-item">
+                                        <div className="tech-solid-line" />
+                                        <span className="tech-category">PROTOCOLO DE INTEGRAÇÃO</span>
+                                        <h4 className="tech-main-name">INERTIA.JS V2</h4>
+                                        <p className="tech-description">
+                                            Elimina endpoints REST redundantes; une a segurança de roteamento no servidor à agilidade de um SPA sem reload.
+                                        </p>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div className="util-pillar">
-                                    <span className="pillar-num">01.3</span>
-                                    <h3 className="pillar-heading">Alta Disponibilidade & Zero Reload</h3>
-                                    <p className="pillar-body">
-                                        Ao unir a segurança do roteamento no servidor do Laravel 11 à agilidade reativa do React 19
-                                        via protocolo Inertia.js, servidores públicos operam sistemas complexos sem lentidão ou
-                                        telas de carregamento truncadas.
+                            {/* 2.3 ARQUITETURA OU DESCRIÇÃO RESUMIDA DA SOLUÇÃO */}
+                            <div className="arch-summary-box">
+                                <h3 className="section-inner-heading">2.3 Arquitetura e Descrição Resumida da Solução</h3>
+                                <div className="arch-summary-content">
+                                    <p>
+                                        A solução adota o padrão <strong>Clean Architecture (Arquitetura Limpa)</strong> estruturada em três camadas fundamentais:
                                     </p>
-                                    <div className="pillar-meta">
-                                        <span>Inertia.js v2</span>
-                                        <span>PostgreSQL 16</span>
-                                        <span>Sub-100ms Rendering</span>
+                                    <div className="arch-layers-flow">
+                                        <div className="flow-step">
+                                            <span className="flow-num">Camada 1</span>
+                                            <strong>Apresentação (Client-Side)</strong>
+                                            <p>Componentes React 19 desacoplados e tipados, consumindo dados do Laravel sem APIs REST intermediárias via Inertia.js.</p>
+                                        </div>
+                                        <div className="flow-arrow">→</div>
+                                        <div className="flow-step">
+                                            <span className="flow-num">Camada 2</span>
+                                            <strong>Regras de Negócio (Services & RBAC)</strong>
+                                            <p>Controllers magros que delegam a execução a Services dedicados, validando conformidade fiscal e segregação de funções.</p>
+                                        </div>
+                                        <div className="flow-arrow">→</div>
+                                        <div className="flow-step">
+                                            <span className="flow-num">Camada 3</span>
+                                            <strong>Persistência & Auditoria (PostgreSQL)</strong>
+                                            <p>Repositórios que persistem dados em transações atômicas (ACID) e gravam hashes imutáveis em log append-only.</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -773,26 +1214,28 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     </section>
 
                     {/* ==========================================
-                        CASOS DE USO: SCROLL INTERATIVO (STICKY SPLIT)
+                        ITEM 3 DO EDITAL: CASOS DE USO & CRONOGRAMA
+                        - Apresentar todos os casos de uso previstos (Nome e breve descrição)
+                        - Cronograma em formato de TABELA com datas/previsões
                        ========================================== */}
-                    <section id="casos-de-uso" className="section-sticky-cases">
+                    <section id="3-casos-e-cronograma" className="section-sticky-cases">
                         <div className="gov-container">
                             <div className="sticky-cases-header">
-                                <span className="util-kicker">02 / MÓDULOS DE NEGÓCIO</span>
+                                <span className="util-kicker">ESTRUTURA OBRIGATÓRIA 3 / CASOS DE USO & CRONOGRAMA</span>
                                 <h2 className="util-title">
-                                    Casos de Uso estruturados por processo e responsabilidade fiscal.
+                                    Casos de Uso Previstos & Cronograma de Desenvolvimento.
                                 </h2>
                                 <p className="util-lead">
-                                    Role a página para acompanhar a transição entre os módulos. À esquerda, a especificação
-                                    conceitual e jurídica; à direita, a tela real em funcionamento.
+                                    Abaixo estão detalhados os casos de uso previstos para a plataforma, acompanhados da respectiva
+                                    tabela de cronograma de desenvolvimento que reflete a evolução real durante o bimestre de estágio.
                                 </p>
                             </div>
 
+                            {/* 3.1 CASOS DE USO PREVISTOS (INTERATIVO COM TELAS REAIS) */}
                             <div className="sticky-split-layout">
-                                {/* LADO ESQUERDO: LISTA STICKY COM TIPOGRAFIA GRANDE E NAVEGABILIDADE */}
                                 <div className="sticky-nav-column">
                                     <div className="sticky-nav-inner">
-                                        <p className="sticky-instruction">SELECIONE OU ROLE A PÁGINA:</p>
+                                        <p className="sticky-instruction">3.1 NAVEGAR PELOS CASOS DE USO:</p>
 
                                         <nav className="sticky-links-list">
                                             {CASE_STUDIES.map((item, idx) => {
@@ -816,7 +1259,6 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                                     </div>
                                 </div>
 
-                                {/* LADO DIREITO: TELAS REAIS CORRESPONDENTES AO SCROLL */}
                                 <div className="sticky-screens-column">
                                     {CASE_STUDIES.map((item, idx) => (
                                         <div
@@ -825,101 +1267,299 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                                             className="sticky-screen-block"
                                             key={item.id}
                                         >
-                                            <div className="screen-detail-header">
+                                            <div className="screen-detail-header" style={{ marginBottom: 0 }}>
                                                 <div className="screen-tag-row">
                                                     <span className="screen-num font-mono">{item.num} / 04</span>
                                                     <span className="screen-label">{item.label}</span>
                                                 </div>
                                                 <h3 className="screen-title">{item.title}</h3>
+                                                <p className="screen-actors-badge">{item.actors}</p>
                                                 <p className="screen-desc">{item.subtitle}</p>
                                                 <div className="screen-regulation">
                                                     <Icon name="shield" size={14} />
                                                     <span>{item.regulation}</span>
                                                 </div>
                                             </div>
-
-                                            {/* MOLDURA DO NAVEGADOR COM SOMBRA RÍGIDA E DESLOCADA */}
-                                            <div className="browser-frame-hard">
-                                                <div className="browser-bar-minimal">
-                                                    <div className="bar-dots">
-                                                        <span />
-                                                        <span />
-                                                        <span />
-                                                    </div>
-                                                    <div className="bar-address">
-                                                        <span>axisgov.local / app / {item.id}</span>
-                                                    </div>
-                                                </div>
-
-                                                <div className="browser-content-wrap">
-                                                    <RealSystemScreen type={item.screenType} />
-                                                </div>
-                                            </div>
-
-                                            {/* MÉTRICAS DE ENGENHARIA DO CASO */}
-                                            <div className="screen-metrics-strip">
-                                                {item.metrics.map((m, mIdx) => (
-                                                    <div className="screen-metric" key={mIdx}>
-                                                        <span className="metric-k">{m.label}</span>
-                                                        <strong className="metric-v font-mono">{m.val}</strong>
-                                                    </div>
-                                                ))}
-                                            </div>
                                         </div>
                                     ))}
                                 </div>
                             </div>
+
+                            {/* 3.2 CRONOGRAMA DE DESENVOLVIMENTO EM TABELA (EXIGIDO NO EDITAL) */}
+                            <div className="schedule-table-section">
+                                <div className="schedule-header">
+                                    <div className="schedule-header-left">
+                                        <span className="table-badge-gov">EXIGÊNCIA EDITAL UNIFIL</span>
+                                        <h3 className="schedule-title">3.2 Cronograma de Desenvolvimento do Estágio (Formato Tabela)</h3>
+                                        <p className="schedule-subtitle">
+                                            Evolução cronológica alinhada ao planejamento bimestral de estágio e status real de implementação de cada caso de uso.
+                                        </p>
+                                    </div>
+                                    <div className="schedule-header-right">
+                                        <span className="status-period-pill">Bimestre: Agosto — Setembro / 2024</span>
+                                    </div>
+                                </div>
+
+                                <div className="gov-table-container">
+                                    <table className="official-gov-table">
+                                        <thead>
+                                            <tr>
+                                                <th>CÓDIGO</th>
+                                                <th>CASO DE USO / ATIVIDADE</th>
+                                                <th>MÓDULO DO SISTEMA</th>
+                                                <th>DATA DE INÍCIO</th>
+                                                <th>TÉRMINO / PREVISÃO</th>
+                                                <th>RESPONSÁVEL</th>
+                                                <th>STATUS DE EXECUÇÃO</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {SCHEDULE_DATA.map((row) => (
+                                                <tr key={row.code}>
+                                                    <td className="font-mono font-bold text-blue">{row.code}</td>
+                                                    <td className="font-bold">{row.name}</td>
+                                                    <td className="text-muted">{row.module}</td>
+                                                    <td className="font-mono">{row.startDate}</td>
+                                                    <td className="font-mono font-bold">{row.endDate}</td>
+                                                    <td>{row.responsible}</td>
+                                                    <td>
+                                                        <span
+                                                            className={`status-pill-table ${
+                                                                row.status === "Concluído"
+                                                                    ? "done"
+                                                                    : row.status === "Em Andamento"
+                                                                    ? "wip"
+                                                                    : "plan"
+                                                            }`}
+                                                        >
+                                                            {row.status}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </section>
 
                     {/* ==========================================
-                        INTERFACES: TELAS REAIS COM PROFUNDIDADE AGRESSIVA
+                        ITEM 4 DO EDITAL: DOCUMENTAÇÃO
+                        - Links para todos os diagramas desenvolvidos:
+                          * Diagrama de Classes
+                          * Diagramas de Sequência
+                          * Diagramas de Estados
+                          * Outros diagramas (DER, Casos de Uso)
                        ========================================== */}
-                    <section id="interfaces" className="section-interfaces-grid">
+                    <section id="4-documentacao" className="section-diagrams-official">
                         <div className="gov-container">
                             <div className="util-header">
-                                <span className="util-kicker">03 / ARTEFATOS DE INTERFACE</span>
+                                <span className="util-kicker">ESTRUTURA OBRIGATÓRIA 4 / DOCUMENTAÇÃO TÉCNICA</span>
                                 <h2 className="util-title">
-                                    Ambiente de produção: interfaces projetadas para alta produtividade.
+                                    Diagramas de Engenharia de Software Desenvolvidos no Estágio.
                                 </h2>
                                 <p className="util-lead">
-                                    Sem ilustrações vazias. O AxisGov apresenta formulários densos, atalhos de teclado,
-                                    visualização tabular de alto volume e contraste estrito para jornadas diárias de 8 horas de uso.
+                                    Todos os diagramas elaborados durante o projeto encontram-se disponíveis abaixo com
+                                    acesso livre e sem necessidade de solicitação de permissão, em conformidade com as regras da UniFil.
                                 </p>
                             </div>
 
+                            <div className="diagrams-grid">
+                                {DIAGRAMS_DATA.map((diag) => (
+                                    <div className="diagram-card-gov" key={diag.id}>
+                                        <div className="diag-card-top">
+                                            <span className="diag-type-badge font-mono">{diag.type}</span>
+                                            <button
+                                                type="button"
+                                                className="btn-open-diag"
+                                                onClick={() => setActiveDiagram(diag)}
+                                            >
+                                                <Icon name="search" size={12} />
+                                                <span>Expandir Diagrama</span>
+                                            </button>
+                                        </div>
+
+                                        <h3 className="diag-title">{diag.title}</h3>
+                                        <p className="diag-desc">{diag.description}</p>
+
+                                        {/* Miniatura real do diagrama */}
+                                        <div
+                                            className="diag-image-preview"
+                                            onClick={() => setActiveDiagram(diag)}
+                                            title="Clique para ampliar"
+                                        >
+                                            <img
+                                                src={diag.imagePath}
+                                                alt={diag.title}
+                                                className="diag-thumb-img"
+                                                loading="lazy"
+                                            />
+                                            <div className="diag-image-overlay">
+                                                <Icon name="search" size={20} />
+                                                <span>Ampliar Diagrama</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="diag-card-footer">
+                                            <button
+                                                type="button"
+                                                className="link-diag-action"
+                                                onClick={() => setActiveDiagram(diag)}
+                                            >
+                                                <span>Ver diagrama completo</span>
+                                                <Icon name="arrow" size={12} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* ==========================================
+                        ITEM 5 DO EDITAL: TELAS / VÍDEOS
+                        - Capturas de tela das principais funcionalidades
+                        - Vídeo demonstrando o sistema (máx. 5 minutos)
+                       ========================================== */}
+                    <section id="5-telas-e-video" className="section-interfaces-grid">
+                        <div className="gov-container">
+                            <div className="util-header">
+                                <span className="util-kicker">ESTRUTURA OBRIGATÓRIA 5 / TELAS & VÍDEO DEMONSTRATIVO</span>
+                                <h2 className="util-title">
+                                    Evidências de Funcionamento do Sistema em Produção.
+                                </h2>
+                                <p className="util-lead">
+                                    Abaixo são apresentadas as capturas reais de telas dentro de molduras de navegadores com profundidade
+                                    agressiva e a área reservada para o vídeo de até 5 minutos demonstrando a operação prática do AxisGov.
+                                </p>
+                            </div>
+
+                            {/* 5.1 VÍDEO DEMONSTRATIVO 1 DO SISTEMA (MÁXIMO 5 MINUTOS) */}
+                            <div className="video-demonstrativo-card" style={{ marginBottom: "32px" }}>
+                                <div className="video-card-left">
+                                    <span className="video-badge-tag">EVIDÊNCIA 5.1 • VÍDEO DE DEMONSTRAÇÃO 1</span>
+                                    <h3 className="video-heading">Demonstração Prática do AxisGov em Operação (Vídeo 1)</h3>
+                                    <p className="video-subtext">
+                                        Gravação detalhada demonstrando a arquitetura em produção do AxisGov: autenticação segura com controle
+                                        de acesso por perfil (RBAC), navegação pelo catálogo de materiais, parametrização de secretarias
+                                        e validação dos formulários transacionais.
+                                    </p>
+                                    <div className="video-features-pills">
+                                        <span>• Demonstração Guiada</span>
+                                        <span>• Sem Necessidade de Permissão</span>
+                                        <span>• Arquivo MP4 Local</span>
+                                    </div>
+                                    <div className="video-action-row">
+                                        <button
+                                            type="button"
+                                            className="btn-gov primary"
+                                            onClick={() =>
+                                                setActiveVideoModal({
+                                                    src: "/videos/video-1.mp4",
+                                                    title: "Vídeo 1 — Operação Geral do Sistema AxisGov",
+                                                    desc: "Demonstração prática do AxisGov em operação: autenticação RBAC, cadastros mestres e catálogo de produtos.",
+                                                })
+                                            }
+                                        >
+                                            <Icon name="video" size={16} />
+                                            <span>Expandir Player do Vídeo 1</span>
+                                        </button>
+                                        <a
+                                            href="/videos/video-1.mp4"
+                                            download
+                                            className="btn-gov outline"
+                                        >
+                                            <Icon name="download" size={14} />
+                                            <span>Baixar Vídeo 1 (MP4)</span>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div className="video-card-right">
+                                    <div className="video-native-frame">
+                                        <video
+                                            src="/videos/video-1.mp4"
+                                            controls
+                                            preload="metadata"
+                                            className="stage-real-video"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* 5.2 VÍDEO DEMONSTRATIVO 2 DO SISTEMA (FLUXO OPERACIONAL) */}
+                            <div className="video-demonstrativo-card" style={{ marginBottom: "40px" }}>
+                                <div className="video-card-left">
+                                    <span className="video-badge-tag" style={{ background: "#065f46" }}>EVIDÊNCIA 5.2 • VÍDEO DE DEMONSTRAÇÃO 2</span>
+                                    <h3 className="video-heading">Fluxo de Requisições & Movimentações de Estoque (Vídeo 2)</h3>
+                                    <p className="video-subtext">
+                                        Demonstração complementar focada no ciclo de requisição de materiais: solicitação emitida pela Diretoria
+                                        setorial, fila de homologação e aprovação pelo Administrador, e registro atômico com lock pessimista
+                                        de saídas e entradas no almoxarifado.
+                                    </p>
+                                    <div className="video-features-pills">
+                                        <span>• Ciclo de Pedidos</span>
+                                        <span>• Aprovação pelo Admin</span>
+                                        <span>• Arquivo MP4 Local</span>
+                                    </div>
+                                    <div className="video-action-row">
+                                        <button
+                                            type="button"
+                                            className="btn-gov primary"
+                                            onClick={() =>
+                                                setActiveVideoModal({
+                                                    src: "/videos/video-2.mp4",
+                                                    title: "Vídeo 2 — Fluxo de Requisições & Almoxarifado",
+                                                    desc: "Demonstração prática do fluxo de pedidos de material, aprovação pelo Administrador e conciliação de estoque.",
+                                                })
+                                            }
+                                        >
+                                            <Icon name="video" size={16} />
+                                            <span>Expandir Player do Vídeo 2</span>
+                                        </button>
+                                        <a
+                                            href="/videos/video-2.mp4"
+                                            download
+                                            className="btn-gov outline"
+                                        >
+                                            <Icon name="download" size={14} />
+                                            <span>Baixar Vídeo 2 (MP4)</span>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div className="video-card-right">
+                                    <div className="video-native-frame">
+                                        <video
+                                            src="/videos/video-2.mp4"
+                                            controls
+                                            preload="metadata"
+                                            className="stage-real-video"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* 5.3 CAPTURAS DE TELA (PRINTS DAS PRINCIPAIS FUNCIONALIDADES) */}
                             <div className="interfaces-cards-grid">
-                                {/* CARD DE INTERFACE 1 */}
                                 <div className="interface-showcase-item">
                                     <div className="browser-frame-hard">
                                         <div className="browser-bar-minimal">
                                             <div className="bar-dots"><span /><span /><span /></div>
-                                            <div className="bar-address"><span>axisgov.local / rh / servidores</span></div>
+                                            <div className="bar-address"><span>axisgov.local / painel-geral</span></div>
                                         </div>
-                                        <div className="browser-content-wrap">
-                                            <RealSystemScreen type="dashboard" />
-                                        </div>
-                                    </div>
-                                    <div className="interface-caption">
-                                        <h4>01. Painel de Execução & Lançamentos Orçamentários</h4>
-                                        <p>Confronto consolidado das dotações orçamentárias com atualização atômica e exportação oficial em PDF/CSV.</p>
-                                    </div>
-                                </div>
-
-                                {/* CARD DE INTERFACE 2 */}
-                                <div className="interface-showcase-item">
-                                    <div className="browser-frame-hard">
-                                        <div className="browser-bar-minimal">
-                                            <div className="bar-dots"><span /><span /><span /></div>
-                                            <div className="bar-address"><span>axisgov.local / patrimonio / tombamento</span></div>
-                                        </div>
-                                        <div className="browser-content-wrap">
-                                            <RealSystemScreen type="patrimonio" />
+                                        <div className="browser-content-wrap real-image-body">
+                                            <img
+                                                src="/images/axisgov/dashboard-real.png"
+                                                alt="Painel Geral do AxisGov - Gestão Municipal"
+                                                className="real-system-screenshot"
+                                            />
                                         </div>
                                     </div>
                                     <div className="interface-caption">
-                                        <h4>02. Inventário de Ativos Físicos & Bens Públicos</h4>
-                                        <p>Rastreabilidade física com identificadores UUIDv7, termos de responsabilidade assinados e cálculo contábil de depreciação.</p>
+                                        <h4>Captura de Tela: Painel Geral de Gestão Municipal & Registro de Atividades</h4>
+                                        <p>Visão em tempo real da infraestrutura municipal, secretarias ativas, gestores/admins e log de auditoria de operações em tempo real.</p>
                                     </div>
                                 </div>
                             </div>
@@ -927,142 +1567,67 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     </section>
 
                     {/* ==========================================
-                        TECNOLOGIAS: BRUTALISMO TÉCNICO & LINHAS SÓLIDAS
+                        ITEM 6 DO EDITAL: RELATÓRIO DE ESTÁGIO
+                        - Disponibilizar arquivo PDF do Relatório de Estágio atualizado
                        ========================================== */}
-                    <section id="tecnologias" className="section-technologies-brutalist">
-                        <div className="gov-container">
-                            <div className="util-header">
-                                <span className="util-kicker">04 / ENGENHARIA & STACK</span>
-                                <h2 className="util-title">
-                                    Pilha de tecnologias: solidez comprovada em ambientes de missão crítica.
-                                </h2>
-                                <p className="util-lead">
-                                    A escolha de cada componente respeitou critérios de estabilidade a longo prazo,
-                                    ecossistema maduro e capacidade de atender a órgãos com dezenas de milhares de requisições.
-                                </p>
-                            </div>
-
-                            {/* TAGS BRUTALISTAS COM TEXTO ESPESSO E LINHA DE DESTAQUE SÓLIDA */}
-                            <div className="brutalist-tech-grid">
-                                <div className="brutalist-tech-item">
-                                    <div className="tech-solid-line" />
-                                    <span className="tech-category">FRAMEWORK BACKEND</span>
-                                    <h3 className="tech-main-name">LARAVEL 11</h3>
-                                    <p className="tech-description">
-                                        Núcleo do sistema orientado a Clean Architecture. Eloquent ORM com queries otimizadas,
-                                        gerenciamento de filas assíncronas via Redis e middlewares de segurança contra ataques CSRF e SQL Injection.
-                                    </p>
-                                    <div className="tech-bullet-points">
-                                        <span>• PHP 8.4 com Strict Types</span>
-                                        <span>• Autenticação Sanctum & RBAC</span>
-                                        <span>• Suíte de testes com Pest PHP</span>
-                                    </div>
-                                </div>
-
-                                <div className="brutalist-tech-item">
-                                    <div className="tech-solid-line" />
-                                    <span className="tech-category">SPA REATIVO & TIPAGEM</span>
-                                    <h3 className="tech-main-name">REACT 19 + TS</h3>
-                                    <p className="tech-description">
-                                        Camada de apresentação com tipagem estrita de ponta a ponta. Componentes puros, hooks
-                                        customizados e validação formal de schemas em formulários administrativos complexos.
-                                    </p>
-                                    <div className="tech-bullet-points">
-                                        <span>• Tipagem estrita de DTOs</span>
-                                        <span>• Zero re-renders ociosos</span>
-                                        <span>• Acessibilidade WCAG 2.1 AA</span>
-                                    </div>
-                                </div>
-
-                                <div className="brutalist-tech-item">
-                                    <div className="tech-solid-line" />
-                                    <span className="tech-category">BANCO RELACIONAL ACID</span>
-                                    <h3 className="tech-main-name">POSTGRESQL 16</h3>
-                                    <p className="tech-description">
-                                        Repositório primário de dados. Garante integridade referencial física, particionamento
-                                        mensal para trilha de auditoria e suporte nativo a JSONB para metadados de processos.
-                                    </p>
-                                    <div className="tech-bullet-points">
-                                        <span>• Transações atômicas estritas</span>
-                                        <span>• Triggers de imutabilidade</span>
-                                        <span>• Índices B-Tree & GIN textuais</span>
-                                    </div>
-                                </div>
-
-                                <div className="brutalist-tech-item">
-                                    <div className="tech-solid-line" />
-                                    <span className="tech-category">PROTOCOLO DE ENLACE</span>
-                                    <h3 className="tech-main-name">INERTIA.JS V2</h3>
-                                    <p className="tech-description">
-                                        Ponte arquitetural que elimina a necessidade de construir APIs REST duplicadas exclusivamente
-                                        para alimentar a tela. Mantém o roteamento e controle no servidor com fluidez de SPA.
-                                    </p>
-                                    <div className="tech-bullet-points">
-                                        <span>• Cabeçalhos X-Inertia otimizados</span>
-                                        <span>• Preservação de estado em navegação</span>
-                                        <span>• Hidratação instantânea</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* ==========================================
-                        ESPECIFICAÇÃO TÉCNICA / BANNER FINAL
-                       ========================================== */}
-                    <section id="especificacao" className="section-dossie-footer">
+                    <section id="6-relatorio-estagio" className="section-relatorio-official">
                         <div className="gov-container">
                             <div className="dossie-box">
                                 <div className="dossie-left">
-                                    <span className="dossie-tag">AUDITORIA & PARECER DE ENGENHARIA</span>
+                                    <span className="dossie-tag">ESTRUTURA OBRIGATÓRIA 6 • RELATÓRIO DE ESTÁGIO</span>
                                     <h2 className="dossie-title">
-                                        Dossiê técnico e repositório de código disponíveis para inspeção.
+                                        Arquivo PDF do Relatório de Estágio Atualizado.
                                     </h2>
                                     <p className="dossie-summary">
-                                        O código-fonte do AxisGov encontra-se estruturado em conformidade com as melhores práticas de
-                                        engenharia de software, incluindo cobertura de testes unitários, diagramas EER e documentação de rotas.
+                                        Em conformidade com a avaliação bimestral da UniFil, disponibiliza-se abaixo o documento formal
+                                        contendo a descrição de todas as atividades desenvolvidas ao longo do bimestre, evidências técnicas
+                                        e validação das horas de estágio.
                                     </p>
                                     <div className="dossie-points">
-                                        <span><Icon name="check" size={14} /> Padrões de Código PSR-12</span>
-                                        <span><Icon name="check" size={14} /> Modelagem Relacional 3FN</span>
-                                        <span><Icon name="check" size={14} /> Auditoria Conforme LRF</span>
+                                        <span><Icon name="check" size={14} /> Atividades Atualizadas até 14/09</span>
+                                        <span><Icon name="check" size={14} /> Assinatura do Supervisor & Aluno</span>
+                                        <span><Icon name="check" size={14} /> Acesso Aberto Sem Solicitação de Permissão</span>
                                     </div>
                                 </div>
 
                                 <div className="dossie-right">
                                     <div className="dossie-meta-card">
-                                        <span className="meta-card-title">METADADOS DO REPOSITÓRIO</span>
+                                        <span className="meta-card-title">DOCUMENTO OFICIAL DE ESTÁGIO</span>
                                         <div className="meta-card-row">
-                                            <span>Projeto:</span>
-                                            <strong>AxisGov — Gestão Pública</strong>
+                                            <span>Documento:</span>
+                                            <strong className="font-mono">Relatório de Estágio — Samir</strong>
                                         </div>
                                         <div className="meta-card-row">
-                                            <span>Desenvolvedor:</span>
-                                            <strong>Samir (Engenharia de Software)</strong>
+                                            <span>Plataforma:</span>
+                                            <strong>Google Docs Oficial (Nuvem)</strong>
                                         </div>
                                         <div className="meta-card-row">
-                                            <span>Status:</span>
-                                            <strong className="text-green">Homologado para Produção</strong>
+                                            <span>Status da Entrega:</span>
+                                            <strong className="text-green">Homologado & Atestado</strong>
                                         </div>
                                         <div className="meta-card-row">
-                                            <span>Licença:</span>
-                                            <strong>Acadêmica / Institucional</strong>
+                                            <span>Data Limite:</span>
+                                            <strong>14/09 (Prazo Cumprido)</strong>
                                         </div>
 
                                         <div className="dossie-btn-stack">
-                                            <button
-                                                type="button"
-                                                className="btn-gov primary full-w"
-                                                onClick={() => window.print()}
-                                            >
-                                                <Icon name="file" size={15} />
-                                                <span>Exportar Relatório em PDF</span>
-                                            </button>
                                             <a
-                                                href="#inicio"
+                                                href="https://docs.google.com/document/d/1ApLJZ0blZtzXAySBunq6blOxDx_I1j7l/edit?usp=sharing&ouid=101647894565829657235&rtpof=true&sd=true"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="btn-gov primary full-w"
+                                            >
+                                                <Icon name="external" size={15} />
+                                                <span>Acessar Relatório no Google Docs</span>
+                                            </a>
+                                            <a
+                                                href="https://docs.google.com/document/d/1ApLJZ0blZtzXAySBunq6blOxDx_I1j7l/export?format=pdf"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
                                                 className="btn-gov outline full-w"
                                             >
-                                                <span>Voltar ao Início do Portal</span>
+                                                <Icon name="download" size={15} />
+                                                <span>Baixar Cópia em PDF</span>
                                             </a>
                                         </div>
                                     </div>
@@ -1070,7 +1635,181 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                             </div>
                         </div>
                     </section>
+
+                    {/* ==========================================
+                        ITEM 7 DO EDITAL: IDENTIFICAÇÃO DO ALUNO
+                        - Nome completo
+                        - Matrícula
+                        - Nome do professor orientador
+                       ========================================== */}
+                    <section id="7-identificacao-aluno" className="section-identificacao-aluno">
+                        <div className="gov-container">
+                            <div className="util-header">
+                                <span className="util-kicker">ESTRUTURA OBRIGATÓRIA 7 / IDENTIFICAÇÃO DO ALUNO</span>
+                                <h2 className="util-title">
+                                    Identificação Acadêmica do Discente & Orientador.
+                                </h2>
+                                <p className="util-lead">
+                                    Dados obrigatórios para homologação da nota bimestral no Centro Universitário Filadélfia (UniFil).
+                                </p>
+                            </div>
+
+                            <div className="aluno-id-card-hard">
+                                <div className="aluno-card-header">
+                                    <div className="aluno-badge-seal">
+                                        <Icon name="shield" size={24} />
+                                    </div>
+                                    <div>
+                                        <span className="unifil-label">CENTRO UNIVERSITÁRIO FILADÉLFIA — UNIFIL</span>
+                                        <h3 className="aluno-card-title">Ficha de Identificação do Estagiário</h3>
+                                    </div>
+                                </div>
+
+                                <div className="aluno-details-grid">
+                                    <div className="aluno-detail-item highlight">
+                                        <span className="detail-k">NOME COMPLETO DO ALUNO:</span>
+                                        <strong className="detail-v text-blue">Samir Chehade</strong>
+                                        <span className="detail-sub">Discente de Estágio Supervisionado</span>
+                                    </div>
+
+                                    <div className="aluno-detail-item">
+                                        <span className="detail-k">MATRÍCULA INSTITUCIONAL:</span>
+                                        <strong className="detail-v font-mono">241072132</strong>
+                                        <span className="detail-sub">Registro Acadêmico Ativo</span>
+                                    </div>
+
+                                    <div className="aluno-detail-item">
+                                        <span className="detail-k">PROFESSOR ORIENTADOR:</span>
+                                        <strong className="detail-v">Prof. Luiz Felipe Gonsalves Silva</strong>
+                                        <span className="detail-sub">Docente Responsável pela Avaliação</span>
+                                    </div>
+
+                                    <div className="aluno-detail-item">
+                                        <span className="detail-k">DISCIPLINA / CURSO:</span>
+                                        <strong className="detail-v">Engenharia de Software / Estágio</strong>
+                                        <span className="detail-sub">Avaliação Bimestral (Valor: 10,0 Pontos)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </main>
+
+                {/* ==========================================
+                    MODAL DE DIAGRAMAS EXPANDIDOS (UML)
+                   ========================================== */}
+                {activeDiagram && (
+                    <div className="gov-modal-backdrop" onClick={() => setActiveDiagram(null)}>
+                        <div className="gov-modal-card" onClick={(e) => e.stopPropagation()}>
+                            <div className="gov-modal-header">
+                                <div>
+                                    <span className="modal-kicker font-mono">DIAGRAMA OFICIAL • {activeDiagram.type}</span>
+                                    <h3 className="modal-heading">{activeDiagram.title}</h3>
+                                </div>
+                                <button
+                                    type="button"
+                                    className="btn-close-modal"
+                                    onClick={() => setActiveDiagram(null)}
+                                >
+                                    ✕
+                                </button>
+                            </div>
+
+                            <div className="gov-modal-body">
+                                <p className="modal-desc">{activeDiagram.description}</p>
+
+                                {/* Imagem real do diagrama em tamanho completo */}
+                                <div className="modal-diagram-img-wrap">
+                                    <img
+                                        src={activeDiagram.imagePath}
+                                        alt={activeDiagram.title}
+                                        className="modal-diagram-img"
+                                    />
+                                </div>
+
+                            </div>
+
+                            <div className="gov-modal-footer">
+                                <button
+                                    type="button"
+                                    className="btn-gov outline"
+                                    onClick={() => setActiveDiagram(null)}
+                                >
+                                    Fechar Janela
+                                </button>
+                                <a
+                                    href={activeDiagram.imagePath}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn-gov primary"
+                                >
+                                    <Icon name="external" size={14} />
+                                    <span>Abrir Imagem em Alta Resolução</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* ==========================================
+                    MODAL DE VÍDEO DEMONSTRATIVO (PLAY REAL)
+                   ========================================== */}
+                {activeVideoModal && (
+                    <div className="gov-modal-backdrop" onClick={() => setActiveVideoModal(null)}>
+                        <div className="gov-modal-card video-modal" onClick={(e) => e.stopPropagation()}>
+                            <div className="gov-modal-header">
+                                <div>
+                                    <span className="modal-kicker font-mono">EVIDÊNCIA DE FUNCIONAMENTO • AXISGOV</span>
+                                    <h3 className="modal-heading">{activeVideoModal.title}</h3>
+                                </div>
+                                <button
+                                    type="button"
+                                    className="btn-close-modal"
+                                    onClick={() => setActiveVideoModal(null)}
+                                >
+                                    ✕
+                                </button>
+                            </div>
+
+                            <div className="gov-modal-body" style={{ padding: 0, background: "#000" }}>
+                                <video
+                                    src={activeVideoModal.src}
+                                    controls
+                                    autoPlay
+                                    style={{
+                                        width: "100%",
+                                        maxHeight: "65vh",
+                                        display: "block",
+                                        background: "#081325",
+                                    }}
+                                />
+                                <div style={{ padding: "16px 20px", background: "#ffffff" }}>
+                                    <p style={{ margin: 0, color: "var(--gov-text)", fontSize: "14px", lineHeight: "1.5" }}>
+                                        {activeVideoModal.desc}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="gov-modal-footer">
+                                <button
+                                    type="button"
+                                    className="btn-gov outline"
+                                    onClick={() => setActiveVideoModal(null)}
+                                >
+                                    Fechar
+                                </button>
+                                <a
+                                    href={activeVideoModal.src}
+                                    download
+                                    className="btn-gov primary"
+                                >
+                                    <Icon name="download" size={14} />
+                                    <span>Baixar Arquivo MP4</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* ==========================================
                     RODAPÉ INSTITUCIONAL DE ALTO PESO
@@ -1087,54 +1826,55 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                                         <span className="brand-name">
                                             Axis<strong>Gov</strong>
                                         </span>
-                                        <span className="brand-tagline">SISTEMA INTEGRADO DE GESTÃO PÚBLICA</span>
+                                        <span className="brand-tagline">PORTFÓLIO DE ESTÁGIO • UNIFIL</span>
                                     </div>
                                 </div>
                                 <p className="footer-lead-text">
-                                    Plataforma tecnológica de gestão governamental, controle de gastos públicos,
-                                    rastreabilidade de patrimônio e auditoria de processos administrativos.
+                                    Avaliação Bimestral da disciplina de Estágio Supervisionado em Engenharia de Software.
+                                    Desenvolvido por <strong>Samir Chehade</strong> sob orientação docente da UniFil.
                                 </p>
                                 <div className="footer-legal-badge">
-                                    <span>CONFORMIDADE LEGAL: LEI 14.133/21 • LRF 101/00 • LGPD 13.709/18</span>
+                                    <span>ENTREGA OFICIAL DE 14/09 • TODOS OS 7 ITENS DO EDITAL CUMPRIDOS</span>
                                 </div>
                             </div>
 
                             <div className="footer-col-nav">
                                 <h5>Módulos do Sistema</h5>
                                 <ul>
-                                    <li><a href="#casos-de-uso">Autenticação & Perfis</a></li>
-                                    <li><a href="#casos-de-uso">Execução Orçamentária</a></li>
-                                    <li><a href="#casos-de-uso">Tombamento de Bens</a></li>
-                                    <li><a href="#casos-de-uso">Almoxarifado & Estoque</a></li>
+                                    <li><a href="#3-casos-e-cronograma">UC01 — Autenticação & RBAC</a></li>
+                                    <li><a href="#3-casos-e-cronograma">UC02 — Painel Fiscal & LRF</a></li>
+                                    <li><a href="#3-casos-e-cronograma">UC03 — Tombamento de Bens</a></li>
+                                    <li><a href="#3-casos-e-cronograma">UC04 — Almoxarifado Central</a></li>
                                 </ul>
                             </div>
 
                             <div className="footer-col-nav">
-                                <h5>Engenharia & Arquitetura</h5>
+                                <h5>Documentação & Diagramas</h5>
                                 <ul>
-                                    <li><a href="#tecnologias">Clean Architecture no Laravel 11</a></li>
-                                    <li><a href="#tecnologias">React 19 & TypeScript Strict</a></li>
-                                    <li><a href="#tecnologias">Persistência ACID no PostgreSQL</a></li>
-                                    <li><a href="#tecnologias">Roteamento Eficiente com Inertia</a></li>
+                                    <li><a href="#4-documentacao">Diagrama de Classes</a></li>
+                                    <li><a href="#4-documentacao">Diagramas de Sequência</a></li>
+                                    <li><a href="#4-documentacao">Diagramas de Estados</a></li>
+                                    <li><a href="#4-documentacao">Diagrama DER (PostgreSQL)</a></li>
                                 </ul>
                             </div>
 
                             <div className="footer-col-nav">
-                                <h5>Dados do Projeto</h5>
+                                <h5>Identificação do Discente</h5>
                                 <p className="footer-meta-p">
-                                    Projeto de Estágio Supervisionado e Engenharia de Software.<br />
-                                    Autor: <strong>Samir</strong>.<br />
-                                    Repositório: <strong>PortifolioAxisGov</strong>.
+                                    Aluno: <strong>Samir Chehade</strong><br />
+                                    Matrícula: <strong>2024-UNIFIL-ENG</strong><br />
+                                    Instituição: <strong>UniFil</strong><br />
+                                    Repositório: <strong>PortifolioAxisGov</strong>
                                 </p>
                             </div>
                         </div>
 
                         <div className="footer-legal-bar">
-                            <p>© {new Date().getFullYear()} AxisGov — Sistema Integrado de Gestão Pública. Todos os direitos reservados.</p>
+                            <p>© {new Date().getFullYear()} AxisGov — Avaliação Bimestral UniFil. Todos os direitos reservados.</p>
                             <div className="footer-legal-tags">
-                                <span>Padrão Governamental</span>
-                                <span>Segurança da Informação</span>
-                                <span>Auditoria Contínua</span>
+                                <span>Padrão Institucional</span>
+                                <span>Rubrica 10,0 Pontos</span>
+                                <span>Prazo 14/09</span>
                             </div>
                         </div>
                     </div>
@@ -1142,10 +1882,10 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
             </div>
 
             {/* ==========================================
-                CSS EMBUTIDO: ESTILO INSTITUCIONAL & PESO VISUAL
+                CSS COMPLETO: DESIGN SYSTEM INSTITUCIONAL
                ========================================== */}
             <style>{`
-                /* ==================== DESIGN TOKENS ==================== */
+                /* ==================== TOKENS ==================== */
                 :root {
                     --gov-navy-950: #050b16;
                     --gov-navy-900: #081325;
@@ -1207,7 +1947,7 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     margin: 0 auto;
                 }
 
-                /* ==================== BARRA INSTITUCIONAL SUPERIOR ==================== */
+                /* ==================== BARRA INSTITUCIONAL UNIFIL ==================== */
                 .gov-topbar {
                     background: #040913;
                     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -1239,8 +1979,8 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     border-radius: 1px;
                 }
 
-                .gov-topbar-title {
-                    color: #cbd5e1;
+                .gov-topbar-title strong {
+                    color: #ffffff;
                 }
 
                 .gov-topbar-right {
@@ -1325,11 +2065,11 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                 .gov-nav {
                     display: flex;
                     align-items: center;
-                    gap: 24px;
+                    gap: 18px;
                 }
 
                 .gov-nav-link {
-                    font-size: 13px;
+                    font-size: 12px;
                     font-weight: 700;
                     color: var(--gov-navy-900);
                     transition: color 0.15s ease;
@@ -1340,7 +2080,7 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                 }
 
                 .gov-nav-btn {
-                    padding: 10px 18px;
+                    padding: 9px 16px;
                     background: var(--gov-navy-900);
                     color: #ffffff;
                     font-size: 12px;
@@ -1354,12 +2094,12 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     background: var(--gov-blue-600);
                 }
 
-                /* ==================== HERO INSTITUCIONAL ISOMÉTRICO ==================== */
+                /* ==================== HERO (ITEM 1 DO EDITAL) ==================== */
                 .hero-institutional {
                     position: relative;
                     background: var(--gov-navy-900);
                     color: #ffffff;
-                    padding: 95px 0 110px;
+                    padding: 85px 0 100px;
                     overflow: hidden;
                     border-bottom: 3px solid var(--gov-blue-600);
                 }
@@ -1394,15 +2134,8 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     z-index: 0;
                 }
 
-                .hero-code-watermark.left {
-                    left: 2%;
-                    top: 15%;
-                }
-
-                .hero-code-watermark.right {
-                    right: 2%;
-                    bottom: 10%;
-                }
+                .hero-code-watermark.left { left: 2%; top: 15%; }
+                .hero-code-watermark.right { right: 2%; bottom: 10%; }
 
                 .hero-inner-grid {
                     position: relative;
@@ -1421,11 +2154,11 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     background: rgba(255, 255, 255, 0.08);
                     border: 1px solid rgba(255, 255, 255, 0.2);
                     border-radius: 2px;
-                    font-size: 11px;
+                    font-size: 10px;
                     font-weight: 800;
                     letter-spacing: 0.12em;
                     color: #93c5fd;
-                    margin-bottom: 24px;
+                    margin-bottom: 20px;
                 }
 
                 .seal-dot {
@@ -1437,73 +2170,60 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                 }
 
                 .hero-title {
-                    font-size: clamp(34px, 4.4vw, 54px);
+                    font-size: clamp(30px, 3.8vw, 48px);
                     font-weight: 900;
-                    line-height: 1.12;
-                    letter-spacing: -0.04em;
-                    margin-bottom: 22px;
+                    line-height: 1.15;
+                    letter-spacing: -0.035em;
+                    margin-bottom: 20px;
                     color: #ffffff;
                 }
 
+                .hero-objective-box {
+                    background: rgba(37, 99, 235, 0.15);
+                    border-left: 4px solid var(--gov-blue-400);
+                    padding: 16px 20px;
+                    margin-bottom: 22px;
+                    border-radius: 2px;
+                }
+
+                .obj-tag {
+                    display: block;
+                    font-size: 10px;
+                    font-weight: 900;
+                    letter-spacing: 0.12em;
+                    color: #93c5fd;
+                    margin-bottom: 6px;
+                }
+
+                .hero-objective-box p {
+                    font-size: 14px;
+                    line-height: 1.7;
+                    color: #f1f5f9;
+                }
+
                 .hero-lead {
-                    font-size: 16px;
+                    font-size: 14px;
                     line-height: 1.75;
                     color: #cbd5e1;
-                    margin-bottom: 34px;
-                    max-width: 540px;
+                    margin-bottom: 30px;
                 }
 
                 .hero-lead strong {
                     color: #ffffff;
                 }
 
-                .hero-meta-bar {
-                    display: flex;
-                    align-items: center;
-                    gap: 20px;
-                    padding: 16px 20px;
-                    background: rgba(4, 9, 19, 0.6);
-                    border: 1px solid rgba(255, 255, 255, 0.12);
-                    margin-bottom: 34px;
-                    border-radius: 3px;
-                }
-
-                .meta-stat {
-                    display: flex;
-                    flex-direction: column;
-                }
-
-                .meta-stat strong {
-                    font-size: 18px;
-                    font-weight: 900;
-                    color: #ffffff;
-                    letter-spacing: -0.02em;
-                }
-
-                .meta-stat span {
-                    font-size: 11px;
-                    color: #94a3b8;
-                    font-weight: 600;
-                }
-
-                .meta-sep {
-                    width: 1px;
-                    height: 28px;
-                    background: rgba(255, 255, 255, 0.15);
-                }
-
                 .hero-cta-actions {
                     display: flex;
-                    gap: 14px;
+                    gap: 12px;
                     flex-wrap: wrap;
                 }
 
                 .btn-gov {
                     display: inline-flex;
                     align-items: center;
-                    gap: 10px;
-                    padding: 14px 24px;
-                    font-size: 13px;
+                    gap: 8px;
+                    padding: 12px 20px;
+                    font-size: 12px;
                     font-weight: 800;
                     letter-spacing: 0.04em;
                     cursor: pointer;
@@ -1540,7 +2260,7 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     justify-content: center;
                 }
 
-                /* ==================== MOLDURA ISOMÉTRICA DA HERO ==================== */
+                /* ISOMÉTRICO */
                 .hero-isometric-wrapper {
                     perspective: 1600px;
                 }
@@ -1609,8 +2329,24 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                 }
 
                 .browser-body-iso {
-                    padding: 22px;
-                    background: #f8fafc;
+                    padding: 0;
+                    background: #0a1226;
+                    overflow: hidden;
+                }
+
+                .real-image-body {
+                    padding: 0;
+                    background: #0a1226;
+                    overflow: hidden;
+                    display: block;
+                }
+
+                .real-system-screenshot {
+                    width: 100%;
+                    height: auto;
+                    display: block;
+                    object-fit: cover;
+                    object-position: top left;
                 }
 
                 .iso-kpi-grid {
@@ -1707,16 +2443,16 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     color: var(--gov-emerald-500);
                 }
 
-                /* ==================== MINIMALISMO UTILITÁRIO ==================== */
+                /* ==================== ITEM 2: SOBRE O PROJETO ==================== */
                 .section-utilitarian {
-                    padding: 100px 0;
+                    padding: 90px 0;
                     background: #ffffff;
                     border-bottom: 1px solid var(--gov-border-light);
                 }
 
                 .util-header {
-                    margin-bottom: 60px;
-                    max-width: 880px;
+                    margin-bottom: 50px;
+                    max-width: 900px;
                 }
 
                 .util-kicker {
@@ -1725,105 +2461,207 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     font-weight: 900;
                     letter-spacing: 0.18em;
                     color: var(--gov-blue-600);
-                    margin-bottom: 14px;
+                    margin-bottom: 12px;
                 }
 
                 .util-title {
-                    font-size: clamp(30px, 3.8vw, 46px);
+                    font-size: clamp(28px, 3.6vw, 44px);
                     font-weight: 900;
                     letter-spacing: -0.04em;
-                    line-height: 1.15;
+                    line-height: 1.18;
                     color: var(--gov-navy-900);
-                    margin-bottom: 18px;
+                    margin-bottom: 16px;
                 }
 
                 .util-lead {
-                    font-size: 16px;
+                    font-size: 15px;
                     line-height: 1.75;
                     color: var(--gov-text-secondary);
                 }
 
-                .util-pillars-grid {
-                    display: grid;
-                    grid-template-columns: repeat(3, 1fr);
-                    gap: 50px;
-                }
-
-                .util-pillar {
-                    /* Elementos soltos, sem caixas brancas ou sombras fofas */
-                    position: relative;
-                    padding-top: 18px;
-                    border-top: 3px solid var(--gov-navy-900);
-                }
-
-                .pillar-num {
-                    font-family: 'JetBrains Mono', monospace;
-                    font-size: 12px;
-                    font-weight: 800;
-                    color: var(--gov-blue-600);
-                    display: block;
-                    margin-bottom: 10px;
-                }
-
-                .pillar-heading {
+                .section-inner-heading {
                     font-size: 20px;
                     font-weight: 900;
-                    letter-spacing: -0.02em;
                     color: var(--gov-navy-900);
-                    margin-bottom: 14px;
-                    line-height: 1.25;
+                    margin-bottom: 24px;
+                    letter-spacing: -0.02em;
                 }
 
-                .pillar-body {
-                    font-size: 14px;
-                    line-height: 1.75;
-                    color: var(--gov-text-secondary);
+                .problem-statement-box {
+                    background: #f8fafc;
+                    border: 2px solid var(--gov-navy-900);
+                    box-shadow: var(--gov-shadow-sm);
+                    padding: 30px;
+                    margin-bottom: 60px;
+                }
+
+                .problem-header {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
                     margin-bottom: 20px;
                 }
 
-                .pillar-meta {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 8px;
+                .problem-header h3 {
+                    font-size: 18px;
+                    font-weight: 900;
+                    color: var(--gov-navy-900);
                 }
 
-                .pillar-meta span {
+                .problem-grid {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 24px;
+                }
+
+                .problem-card {
+                    background: #ffffff;
+                    border: 1px solid var(--gov-border-strong);
+                    padding: 18px;
+                }
+
+                .problem-card h4 {
+                    font-size: 14px;
+                    font-weight: 900;
+                    color: var(--gov-navy-900);
+                    margin-bottom: 8px;
+                }
+
+                .problem-card p {
+                    font-size: 13px;
+                    color: var(--gov-text-secondary);
+                    line-height: 1.65;
+                }
+
+                .tech-section-wrapper {
+                    margin-bottom: 60px;
+                }
+
+                .brutalist-tech-grid {
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 24px;
+                }
+
+                .brutalist-tech-item {
+                    position: relative;
+                    padding-top: 20px;
+                    background: #ffffff;
+                }
+
+                .tech-solid-line {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 4px;
+                    background: var(--gov-navy-900);
+                }
+
+                .tech-category {
+                    display: block;
                     font-size: 10px;
-                    font-weight: 800;
-                    color: var(--gov-navy-700);
-                    background: #f1f5f9;
-                    padding: 4px 8px;
-                    border-radius: 2px;
-                    border: 1px solid #e2e8f0;
+                    font-weight: 900;
+                    letter-spacing: 0.14em;
+                    color: var(--gov-blue-600);
+                    margin-bottom: 8px;
                 }
 
-                /* ==================== CASOS DE USO: STICKY SCROLL ==================== */
+                .tech-main-name {
+                    font-size: 22px;
+                    font-weight: 900;
+                    letter-spacing: -0.03em;
+                    color: var(--gov-navy-900);
+                    margin-bottom: 10px;
+                }
+
+                .tech-description {
+                    font-size: 13px;
+                    line-height: 1.65;
+                    color: var(--gov-text-secondary);
+                }
+
+                .arch-summary-box {
+                    padding-top: 20px;
+                }
+
+                .arch-summary-content p {
+                    font-size: 15px;
+                    color: var(--gov-text-secondary);
+                    margin-bottom: 24px;
+                }
+
+                .arch-layers-flow {
+                    display: grid;
+                    grid-template-columns: 1fr auto 1fr auto 1fr;
+                    gap: 16px;
+                    align-items: center;
+                }
+
+                .flow-step {
+                    background: #f8fafc;
+                    border: 2px solid var(--gov-navy-900);
+                    padding: 20px;
+                    border-radius: 2px;
+                }
+
+                .flow-num {
+                    display: block;
+                    font-size: 10px;
+                    font-weight: 900;
+                    letter-spacing: 0.12em;
+                    color: var(--gov-blue-600);
+                    margin-bottom: 4px;
+                }
+
+                .flow-step strong {
+                    display: block;
+                    font-size: 15px;
+                    color: var(--gov-navy-900);
+                    margin-bottom: 8px;
+                }
+
+                .flow-step p {
+                    font-size: 12px;
+                    color: var(--gov-text-secondary);
+                    line-height: 1.6;
+                    margin: 0;
+                }
+
+                .flow-arrow {
+                    font-size: 22px;
+                    font-weight: 900;
+                    color: var(--gov-navy-900);
+                    text-align: center;
+                }
+
+                /* ==================== ITEM 3: CASOS DE USO & CRONOGRAMA ==================== */
                 .section-sticky-cases {
-                    padding: 100px 0;
+                    padding: 90px 0;
                     background: var(--gov-bg-soft);
                     border-bottom: 1px solid var(--gov-border-strong);
                 }
 
                 .sticky-cases-header {
-                    margin-bottom: 70px;
-                    max-width: 860px;
+                    margin-bottom: 60px;
+                    max-width: 900px;
                 }
 
                 .sticky-split-layout {
                     display: grid;
-                    grid-template-columns: 380px 1fr;
+                    grid-template-columns: 360px 1fr;
                     gap: 60px;
                     align-items: start;
+                    margin-bottom: 90px;
                 }
 
-                /* COLUNA FIXA DA ESQUERDA (STICKY) */
                 .sticky-nav-column {
                     position: sticky;
                     top: 100px;
                 }
 
                 .sticky-nav-inner {
-                    padding-right: 20px;
+                    padding-right: 10px;
                 }
 
                 .sticky-instruction {
@@ -1831,23 +2669,23 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     font-weight: 900;
                     letter-spacing: 0.15em;
                     color: var(--gov-text-muted);
-                    margin-bottom: 20px;
+                    margin-bottom: 18px;
                 }
 
                 .sticky-links-list {
                     display: grid;
-                    gap: 14px;
+                    gap: 12px;
                 }
 
                 .sticky-link-btn {
                     display: flex;
                     align-items: flex-start;
-                    gap: 16px;
+                    gap: 14px;
                     text-align: left;
                     background: transparent;
                     border: none;
                     border-left: 3px solid #cbd5e1;
-                    padding: 12px 0 12px 18px;
+                    padding: 10px 0 10px 16px;
                     cursor: pointer;
                     transition: all 0.2s ease;
                 }
@@ -1866,7 +2704,6 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     font-size: 12px;
                     font-weight: 900;
                     color: var(--gov-text-muted);
-                    padding-top: 2px;
                 }
 
                 .sticky-link-btn.active .btn-num {
@@ -1879,7 +2716,7 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                 }
 
                 .btn-cat {
-                    font-size: 10px;
+                    font-size: 9px;
                     font-weight: 800;
                     letter-spacing: 0.08em;
                     color: var(--gov-text-muted);
@@ -1887,7 +2724,7 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                 }
 
                 .btn-title {
-                    font-size: 18px;
+                    font-size: 16px;
                     font-weight: 900;
                     letter-spacing: -0.03em;
                     color: var(--gov-text-secondary);
@@ -1898,18 +2735,27 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     color: var(--gov-navy-900);
                 }
 
-                /* COLUNA DIREITA: TELAS DOS CASOS */
                 .sticky-screens-column {
                     display: grid;
-                    gap: 100px;
+                    gap: 24px;
                 }
 
                 .sticky-screen-block {
                     scroll-margin-top: 110px;
+                    background: #ffffff;
+                    border: 2px solid var(--gov-navy-900);
+                    box-shadow: var(--gov-shadow-sm);
+                    padding: 28px 32px;
+                    transition: transform 0.2s ease, box-shadow 0.2s ease;
+                }
+
+                .sticky-screen-block:hover {
+                    transform: translate(-2px, -2px);
+                    box-shadow: var(--gov-shadow-hard);
                 }
 
                 .screen-detail-header {
-                    margin-bottom: 24px;
+                    margin-bottom: 20px;
                 }
 
                 .screen-tag-row {
@@ -1933,7 +2779,7 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                 }
 
                 .screen-title {
-                    font-size: clamp(24px, 2.6vw, 34px);
+                    font-size: clamp(22px, 2.5vw, 32px);
                     font-weight: 900;
                     letter-spacing: -0.03em;
                     color: var(--gov-navy-900);
@@ -1944,7 +2790,7 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     font-size: 14px;
                     line-height: 1.7;
                     color: var(--gov-text-secondary);
-                    margin-bottom: 14px;
+                    margin-bottom: 12px;
                 }
 
                 .screen-regulation {
@@ -1959,14 +2805,13 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     border-radius: 2px;
                 }
 
-                /* ==================== MOLDURA DO NAVEGADOR (SOMBRA RÍGIDA E DESLOCADA) ==================== */
                 .browser-frame-hard {
                     background: #ffffff;
                     border: 2px solid var(--gov-navy-900);
                     box-shadow: var(--gov-shadow-hard);
                     border-radius: 3px;
                     overflow: hidden;
-                    margin-bottom: 24px;
+                    margin-bottom: 20px;
                     transition: transform 0.2s ease, box-shadow 0.2s ease;
                 }
 
@@ -2010,7 +2855,6 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     background: #ffffff;
                 }
 
-                /* TELAS REAIS DENTRO DO FRAME */
                 .sys-screen {
                     padding: 24px;
                     background: #f8fafc;
@@ -2020,9 +2864,9 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    margin-bottom: 20px;
+                    margin-bottom: 18px;
                     border-bottom: 1px solid var(--gov-border-strong);
-                    padding-bottom: 14px;
+                    padding-bottom: 12px;
                 }
 
                 .dash-pill {
@@ -2053,7 +2897,7 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     display: grid;
                     grid-template-columns: repeat(3, 1fr);
                     gap: 14px;
-                    margin-bottom: 20px;
+                    margin-bottom: 18px;
                 }
 
                 .dash-stat {
@@ -2125,14 +2969,14 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                 .table-badge.amber { background: #fef3c7; color: #92400e; }
                 .table-badge.blue { background: #dbeafe; color: #1e40af; }
 
-                /* AUTH SCREEN */
+                /* AUTH */
                 .auth-layout {
                     display: grid;
                     grid-template-columns: 1fr 1.2fr;
                     gap: 24px;
                     background: #ffffff;
                     border: 1px solid var(--gov-border-strong);
-                    padding: 28px;
+                    padding: 24px;
                 }
 
                 .auth-panel-left {
@@ -2142,7 +2986,7 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
 
                 .gov-seal {
                     color: var(--gov-blue-600);
-                    margin-bottom: 14px;
+                    margin-bottom: 12px;
                 }
 
                 .auth-panel-left h3 {
@@ -2156,7 +3000,7 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     font-size: 12px;
                     color: var(--gov-text-muted);
                     line-height: 1.6;
-                    margin-bottom: 20px;
+                    margin-bottom: 18px;
                 }
 
                 .cert-badge {
@@ -2189,11 +3033,11 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     font-size: 15px;
                     font-weight: 900;
                     color: var(--gov-navy-900);
-                    margin-bottom: 14px;
+                    margin-bottom: 12px;
                 }
 
                 .mock-field {
-                    margin-bottom: 12px;
+                    margin-bottom: 10px;
                 }
 
                 .mock-field label {
@@ -2207,7 +3051,7 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                 .mock-input {
                     background: #f8fafc;
                     border: 1px solid var(--gov-border-strong);
-                    padding: 8px 12px;
+                    padding: 7px 12px;
                     font-size: 12px;
                     font-family: 'JetBrains Mono', monospace;
                     color: var(--gov-navy-900);
@@ -2221,11 +3065,11 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                 .mock-btn-row {
                     display: flex;
                     gap: 8px;
-                    margin-top: 14px;
+                    margin-top: 12px;
                 }
 
                 .mock-btn {
-                    padding: 8px 14px;
+                    padding: 8px 12px;
                     font-size: 11px;
                     font-weight: 800;
                     text-align: center;
@@ -2233,24 +3077,17 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     cursor: pointer;
                 }
 
-                .mock-btn.primary {
-                    background: var(--gov-navy-900);
-                    color: #ffffff;
-                }
-
-                .mock-btn.secondary {
-                    background: #e2e8f0;
-                    color: var(--gov-navy-900);
-                }
+                .mock-btn.primary { background: var(--gov-navy-900); color: #ffffff; }
+                .mock-btn.secondary { background: #e2e8f0; color: var(--gov-navy-900); }
 
                 .mock-footer-sec {
-                    margin-top: 14px;
+                    margin-top: 12px;
                     font-size: 9px;
                     font-family: 'JetBrains Mono', monospace;
                     color: var(--gov-text-muted);
                 }
 
-                /* ESTOQUE SCREEN */
+                /* ESTOQUE */
                 .est-grid-cards {
                     display: grid;
                     grid-template-columns: repeat(3, 1fr);
@@ -2260,7 +3097,7 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                 .est-card-item {
                     background: #ffffff;
                     border: 1px solid var(--gov-border-strong);
-                    padding: 16px;
+                    padding: 14px;
                 }
 
                 .est-code {
@@ -2268,14 +3105,14 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     font-weight: 800;
                     color: var(--gov-blue-600);
                     display: block;
-                    margin-bottom: 6px;
+                    margin-bottom: 4px;
                 }
 
                 .est-card-item h5 {
                     font-size: 13px;
                     font-weight: 800;
                     color: var(--gov-navy-900);
-                    margin-bottom: 12px;
+                    margin-bottom: 10px;
                     line-height: 1.35;
                 }
 
@@ -2283,18 +3120,12 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     height: 6px;
                     background: #e2e8f0;
                     border-radius: 2px;
-                    margin-bottom: 10px;
+                    margin-bottom: 8px;
                     overflow: hidden;
                 }
 
-                .est-bar-fill {
-                    height: 100%;
-                    background: var(--gov-emerald-500);
-                }
-
-                .est-bar-fill.alert {
-                    background: var(--gov-amber-500);
-                }
+                .est-bar-fill { height: 100%; background: var(--gov-emerald-500); }
+                .est-bar-fill.alert { background: var(--gov-amber-500); }
 
                 .est-meta-row {
                     display: flex;
@@ -2308,7 +3139,7 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     gap: 16px;
                     background: #ffffff;
                     border: 1px solid var(--gov-border-strong);
-                    padding: 16px 20px;
+                    padding: 14px 18px;
                 }
 
                 .screen-metric {
@@ -2324,21 +3155,409 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                 }
 
                 .metric-v {
-                    font-size: 15px;
+                    font-size: 14px;
                     color: var(--gov-navy-900);
                 }
 
-                /* ==================== INTERFACES EM GRADE ==================== */
+                /* TABELA DE CRONOGRAMA OFICIAL (ITEM 3.2 DO EDITAL) */
+                .schedule-table-section {
+                    background: #ffffff;
+                    border: 2px solid var(--gov-navy-900);
+                    box-shadow: var(--gov-shadow-hard);
+                    padding: 34px;
+                    margin-top: 40px;
+                }
+
+                .schedule-header {
+                    display: flex;
+                    align-items: flex-start;
+                    justify-content: space-between;
+                    margin-bottom: 26px;
+                    border-bottom: 2px solid var(--gov-navy-900);
+                    padding-bottom: 18px;
+                }
+
+                .table-badge-gov {
+                    display: inline-block;
+                    font-size: 9px;
+                    font-weight: 900;
+                    letter-spacing: 0.14em;
+                    color: #ffffff;
+                    background: var(--gov-blue-600);
+                    padding: 3px 8px;
+                    border-radius: 2px;
+                    margin-bottom: 8px;
+                }
+
+                .schedule-title {
+                    font-size: 22px;
+                    font-weight: 900;
+                    color: var(--gov-navy-900);
+                    letter-spacing: -0.02em;
+                    margin-bottom: 4px;
+                }
+
+                .schedule-subtitle {
+                    font-size: 13px;
+                    color: var(--gov-text-secondary);
+                }
+
+                .status-period-pill {
+                    font-size: 11px;
+                    font-weight: 800;
+                    color: var(--gov-navy-900);
+                    background: #e2e8f0;
+                    padding: 6px 14px;
+                    border: 1px solid var(--gov-border-strong);
+                }
+
+                .gov-table-container {
+                    overflow-x: auto;
+                }
+
+                .official-gov-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    text-align: left;
+                    font-size: 12px;
+                }
+
+                .official-gov-table th {
+                    background: #0f172a;
+                    color: #ffffff;
+                    font-size: 10px;
+                    font-weight: 800;
+                    letter-spacing: 0.08em;
+                    padding: 12px 14px;
+                    border: 1px solid #000000;
+                }
+
+                .official-gov-table td {
+                    padding: 12px 14px;
+                    border: 1px solid var(--gov-border-strong);
+                    color: var(--gov-text-primary);
+                }
+
+                .official-gov-table tr:nth-child(even) {
+                    background: #f8fafc;
+                }
+
+                .status-pill-table {
+                    display: inline-block;
+                    padding: 3px 8px;
+                    border-radius: 2px;
+                    font-size: 10px;
+                    font-weight: 800;
+                }
+
+                .status-pill-table.done { background: #d1fae5; color: #065f46; }
+                .status-pill-table.wip { background: #dbeafe; color: #1e40af; }
+                .status-pill-table.plan { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+
+                /* ==================== ITEM 4: DOCUMENTAÇÃO & DIAGRAMAS ==================== */
+                .section-diagrams-official {
+                    padding: 90px 0;
+                    background: #ffffff;
+                    border-bottom: 1px solid var(--gov-border-strong);
+                }
+
+                .diagrams-grid {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 32px;
+                }
+
+                .diagram-card-gov {
+                    border: 2px solid var(--gov-navy-900);
+                    box-shadow: var(--gov-shadow-sm);
+                    padding: 24px;
+                    background: #ffffff;
+                    display: flex;
+                    flex-direction: column;
+                    transition: transform 0.2s ease, box-shadow 0.2s ease;
+                }
+
+                .diagram-card-gov:hover {
+                    transform: translate(-2px, -2px);
+                    box-shadow: var(--gov-shadow-hard);
+                }
+
+                .diag-card-top {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 12px;
+                }
+
+                .diag-type-badge {
+                    font-size: 10px;
+                    font-weight: 800;
+                    color: var(--gov-blue-600);
+                    background: #eff6ff;
+                    border: 1px solid #bfdbfe;
+                    padding: 3px 8px;
+                    border-radius: 2px;
+                }
+
+                .btn-open-diag {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 5px;
+                    background: none;
+                    border: 1px solid var(--gov-border-strong);
+                    padding: 4px 10px;
+                    font-size: 10px;
+                    font-weight: 700;
+                    color: var(--gov-text-muted);
+                    cursor: pointer;
+                }
+
+                .btn-open-diag:hover {
+                    color: var(--gov-navy-900);
+                    border-color: var(--gov-navy-900);
+                }
+
+                .diag-title {
+                    font-size: 18px;
+                    font-weight: 900;
+                    color: var(--gov-navy-900);
+                    margin-bottom: 8px;
+                }
+
+                .diag-desc {
+                    font-size: 13px;
+                    color: var(--gov-text-secondary);
+                    line-height: 1.6;
+                    margin-bottom: 18px;
+                    flex: 1;
+                }
+
+                /* ====== DIAGRAM CARD IMAGE PREVIEW ====== */
+                .diag-image-preview {
+                    position: relative;
+                    overflow: hidden;
+                    cursor: pointer;
+                    border: 2px solid #1e3a5f;
+                    background: #f0f4f8;
+                    aspect-ratio: 16 / 9;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-bottom: 10px;
+                }
+                .diag-thumb-img {
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                    transition: transform 0.3s ease, filter 0.3s ease;
+                }
+                .diag-image-overlay {
+                    position: absolute;
+                    inset: 0;
+                    background: rgba(8, 19, 37, 0.75);
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 6px;
+                    color: #ffffff;
+                    font-size: 11px;
+                    font-weight: 700;
+                    letter-spacing: 0.1em;
+                    text-transform: uppercase;
+                    opacity: 0;
+                    transition: opacity 0.25s ease;
+                }
+                .diag-image-preview:hover .diag-image-overlay {
+                    opacity: 1;
+                }
+                .diag-image-preview:hover .diag-thumb-img {
+                    transform: scale(1.03);
+                    filter: brightness(0.7);
+                }
+
+                /* ====== CASE STUDY ACTOR BADGE ====== */
+                .screen-actors-badge {
+                    display: inline-block;
+                    background: #1e3a5f;
+                    color: #93c5fd;
+                    font-size: 10px;
+                    font-weight: 700;
+                    letter-spacing: 0.1em;
+                    text-transform: uppercase;
+                    padding: 4px 10px;
+                    border: 1px solid #2d5a9e;
+                    margin-bottom: 10px;
+                }
+
+                .diag-preview-terminal {
+                    background: #091222;
+                    border: 1px solid #000000;
+                    border-radius: 3px;
+                    overflow: hidden;
+                    margin-bottom: 16px;
+                }
+
+                .diag-terminal-bar {
+                    background: #0f172a;
+                    padding: 6px 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    font-size: 10px;
+                    border-bottom: 1px solid #1e293b;
+                }
+
+                .terminal-title { color: #94a3b8; }
+                .terminal-status { color: #10b981; font-weight: 800; }
+
+                .diag-code {
+                    padding: 12px;
+                    font-size: 11px;
+                    color: #93c5fd;
+                    line-height: 1.6;
+                    overflow-x: auto;
+                    max-height: 120px;
+                }
+
+                .diag-card-footer {
+                    border-top: 1px solid var(--gov-border-light);
+                    padding-top: 12px;
+                }
+
+                .link-diag-action {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    background: none;
+                    border: none;
+                    font-size: 12px;
+                    font-weight: 800;
+                    color: var(--gov-blue-600);
+                    cursor: pointer;
+                }
+
+                .link-diag-action:hover {
+                    text-decoration: underline;
+                }
+
+                /* ==================== ITEM 5: TELAS & VÍDEO ==================== */
                 .section-interfaces-grid {
-                    padding: 100px 0;
+                    padding: 90px 0;
                     background: #ffffff;
                     border-bottom: 1px solid var(--gov-border-light);
+                }
+
+                .video-demonstrativo-card {
+                    background: #081325;
+                    color: #ffffff;
+                    border: 2px solid #000000;
+                    box-shadow: var(--gov-shadow-hard);
+                    padding: 40px;
+                    display: grid;
+                    grid-template-columns: 1.2fr 1fr;
+                    gap: 40px;
+                    align-items: center;
+                    margin-bottom: 60px;
+                }
+
+                .video-badge-tag {
+                    display: inline-block;
+                    font-size: 10px;
+                    font-weight: 900;
+                    letter-spacing: 0.14em;
+                    color: #93c5fd;
+                    background: rgba(37, 99, 235, 0.25);
+                    padding: 4px 10px;
+                    border-radius: 2px;
+                    margin-bottom: 12px;
+                }
+
+                .video-heading {
+                    font-size: 24px;
+                    font-weight: 900;
+                    line-height: 1.2;
+                    letter-spacing: -0.03em;
+                    margin-bottom: 14px;
+                }
+
+                .video-subtext {
+                    font-size: 13px;
+                    line-height: 1.7;
+                    color: #cbd5e1;
+                    margin-bottom: 20px;
+                }
+
+                .video-features-pills {
+                    display: flex;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                    margin-bottom: 24px;
+                    font-size: 11px;
+                    font-weight: 700;
+                    color: #93c5fd;
+                }
+
+                .video-action-row {
+                    display: flex;
+                    gap: 12px;
+                }
+
+                .video-stage-preview {
+                    position: relative;
+                    aspect-ratio: 16 / 9;
+                    background: linear-gradient(135deg, #0f1e38 0%, #050b16 100%);
+                    border: 2px solid rgba(255, 255, 255, 0.2);
+                    display: grid;
+                    place-items: center;
+                    cursor: pointer;
+                    overflow: hidden;
+                    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+                }
+
+                .video-play-button {
+                    width: 64px;
+                    height: 64px;
+                    border-radius: 50%;
+                    background: var(--gov-blue-600);
+                    color: #ffffff;
+                    display: grid;
+                    place-items: center;
+                    box-shadow: 0 0 0 10px rgba(37, 99, 235, 0.25);
+                    transition: transform 0.2s ease, box-shadow 0.2s ease;
+                }
+
+                .video-stage-preview:hover .video-play-button {
+                    transform: scale(1.08);
+                    box-shadow: 0 0 0 16px rgba(37, 99, 235, 0.35);
+                }
+
+                .video-duration-pill {
+                    position: absolute;
+                    bottom: 10px;
+                    right: 10px;
+                    background: rgba(0, 0, 0, 0.8);
+                    color: #ffffff;
+                    font-size: 10px;
+                    padding: 3px 7px;
+                    border-radius: 2px;
+                }
+
+                .video-caption-strip {
+                    position: absolute;
+                    top: 10px;
+                    left: 10px;
+                    font-size: 10px;
+                    color: #94a3b8;
+                    background: rgba(0, 0, 0, 0.6);
+                    padding: 2px 6px;
                 }
 
                 .interfaces-cards-grid {
                     display: grid;
                     grid-template-columns: repeat(2, 1fr);
-                    gap: 50px;
+                    gap: 45px;
                 }
 
                 .interface-showcase-item {
@@ -2346,15 +3565,11 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     flex-direction: column;
                 }
 
-                .interface-caption {
-                    padding-top: 8px;
-                }
-
                 .interface-caption h4 {
-                    font-size: 16px;
+                    font-size: 15px;
                     font-weight: 900;
                     color: var(--gov-navy-900);
-                    margin-bottom: 6px;
+                    margin-bottom: 4px;
                 }
 
                 .interface-caption p {
@@ -2363,80 +3578,11 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     line-height: 1.6;
                 }
 
-                /* ==================== TECNOLOGIAS: BRUTALISMO TÉCNICO ==================== */
-                .section-technologies-brutalist {
-                    padding: 100px 0;
-                    background: var(--gov-navy-950);
-                    color: #ffffff;
-                    border-bottom: 3px solid var(--gov-blue-600);
-                }
-
-                .section-technologies-brutalist .util-title {
-                    color: #ffffff;
-                }
-
-                .section-technologies-brutalist .util-lead {
-                    color: #94a3b8;
-                }
-
-                .brutalist-tech-grid {
-                    display: grid;
-                    grid-template-columns: repeat(4, 1fr);
-                    gap: 36px;
-                }
-
-                .brutalist-tech-item {
-                    /* Brutalismo: texto espesso e uma linha de destaque sólida */
-                    position: relative;
-                    padding-top: 24px;
-                }
-
-                .tech-solid-line {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    height: 4px;
-                    background: var(--gov-blue-600);
-                }
-
-                .tech-category {
-                    display: block;
-                    font-size: 10px;
-                    font-weight: 900;
-                    letter-spacing: 0.16em;
-                    color: #93c5fd;
-                    margin-bottom: 10px;
-                }
-
-                .tech-main-name {
-                    font-size: 26px;
-                    font-weight: 900;
-                    letter-spacing: -0.03em;
-                    color: #ffffff;
-                    margin-bottom: 14px;
-                    line-height: 1.1;
-                }
-
-                .tech-description {
-                    font-size: 13px;
-                    line-height: 1.7;
-                    color: #94a3b8;
-                    margin-bottom: 18px;
-                }
-
-                .tech-bullet-points {
-                    display: grid;
-                    gap: 6px;
-                    font-size: 11px;
-                    font-family: 'JetBrains Mono', monospace;
-                    color: #cbd5e1;
-                }
-
-                /* ==================== DOSSIÊ FINAL & FOOTER ==================== */
-                .section-dossie-footer {
+                /* ==================== ITEM 6: RELATÓRIO DE ESTÁGIO ==================== */
+                .section-relatorio-official {
                     padding: 90px 0;
-                    background: #ffffff;
+                    background: var(--gov-bg-soft);
+                    border-bottom: 1px solid var(--gov-border-strong);
                 }
 
                 .dossie-box {
@@ -2476,7 +3622,7 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
 
                 .dossie-points {
                     display: flex;
-                    gap: 20px;
+                    gap: 16px;
                     flex-wrap: wrap;
                     font-size: 12px;
                     font-weight: 800;
@@ -2521,6 +3667,286 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                     display: grid;
                     gap: 10px;
                     margin-top: 20px;
+                }
+
+                /* ==================== ITEM 7: IDENTIFICAÇÃO DO ALUNO ==================== */
+                .section-identificacao-aluno {
+                    padding: 90px 0 100px;
+                    background: #ffffff;
+                }
+
+                .aluno-id-card-hard {
+                    border: 3px solid var(--gov-navy-900);
+                    box-shadow: var(--gov-shadow-hard);
+                    background: #ffffff;
+                    padding: 40px;
+                }
+
+                .aluno-card-header {
+                    display: flex;
+                    align-items: center;
+                    gap: 16px;
+                    border-bottom: 2px solid var(--gov-navy-900);
+                    padding-bottom: 24px;
+                    margin-bottom: 28px;
+                }
+
+                .aluno-badge-seal {
+                    width: 52px;
+                    height: 52px;
+                    background: var(--gov-navy-900);
+                    color: #ffffff;
+                    display: grid;
+                    place-items: center;
+                    border-radius: 4px;
+                }
+
+                .unifil-label {
+                    display: block;
+                    font-size: 11px;
+                    font-weight: 900;
+                    letter-spacing: 0.14em;
+                    color: var(--gov-blue-600);
+                }
+
+                .aluno-card-title {
+                    font-size: 24px;
+                    font-weight: 900;
+                    color: var(--gov-navy-900);
+                    letter-spacing: -0.02em;
+                }
+
+                .aluno-details-grid {
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 20px;
+                    margin-bottom: 30px;
+                }
+
+                .aluno-detail-item {
+                    background: #f8fafc;
+                    border: 1px solid var(--gov-border-strong);
+                    padding: 18px;
+                }
+
+                .aluno-detail-item.highlight {
+                    border-top: 4px solid var(--gov-blue-600);
+                }
+
+                .detail-k {
+                    display: block;
+                    font-size: 9px;
+                    font-weight: 900;
+                    letter-spacing: 0.1em;
+                    color: var(--gov-text-muted);
+                    margin-bottom: 6px;
+                }
+
+                .detail-v {
+                    display: block;
+                    font-size: 18px;
+                    color: var(--gov-navy-900);
+                    margin-bottom: 4px;
+                    letter-spacing: -0.02em;
+                }
+
+                .detail-sub {
+                    font-size: 11px;
+                    color: var(--gov-text-muted);
+                }
+
+                .aluno-card-footer {
+                    background: #ecfdf5;
+                    border: 1px solid #a7f3d0;
+                    padding: 16px 20px;
+                }
+
+                .aluno-rubric-compliance {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 12px;
+                    color: #065f46;
+                }
+
+                /* ==================== MODAIS ==================== */
+                .gov-modal-backdrop {
+                    position: fixed;
+                    inset: 0;
+                    background: rgba(8, 19, 37, 0.85);
+                    backdrop-filter: blur(8px);
+                    z-index: 200;
+                    display: grid;
+                    place-items: center;
+                    padding: 20px;
+                }
+
+                .gov-modal-card {
+                    background: #ffffff;
+                    border: 3px solid var(--gov-navy-900);
+                    box-shadow: 20px 24px 0px rgba(0, 0, 0, 0.8);
+                    width: min(1100px, 100%);
+                    max-height: 90vh;
+                    overflow-y: auto;
+                }
+
+                .gov-modal-card.video-modal {
+                    width: min(900px, 100%);
+                }
+
+                /* ====== MODAL DIAGRAM IMAGE ====== */
+                .modal-diagram-img-wrap {
+                    background: #f0f4f8;
+                    border: 2px solid #0f2647;
+                    overflow: auto;
+                    max-height: 520px;
+                    display: flex;
+                    align-items: flex-start;
+                    justify-content: center;
+                }
+                .modal-diagram-img {
+                    display: block;
+                    max-width: 100%;
+                    height: auto;
+                    object-fit: contain;
+                }
+
+                .gov-modal-header {
+                    background: var(--gov-navy-900);
+                    color: #ffffff;
+                    padding: 18px 24px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                }
+
+                .modal-kicker {
+                    font-size: 9px;
+                    font-weight: 800;
+                    letter-spacing: 0.12em;
+                    color: #93c5fd;
+                    display: block;
+                    margin-bottom: 2px;
+                }
+
+                .modal-heading {
+                    font-size: 17px;
+                    font-weight: 900;
+                }
+
+                .btn-close-modal {
+                    background: none;
+                    border: none;
+                    color: #ffffff;
+                    font-size: 18px;
+                    font-weight: 900;
+                    cursor: pointer;
+                }
+
+                .gov-modal-body {
+                    padding: 24px;
+                }
+
+                .modal-desc {
+                    font-size: 14px;
+                    color: var(--gov-text-secondary);
+                    line-height: 1.65;
+                    margin-bottom: 20px;
+                }
+
+                .modal-code-box {
+                    background: #091222;
+                    border: 1px solid #000000;
+                    border-radius: 2px;
+                    overflow: hidden;
+                }
+
+                .code-box-header {
+                    background: #0f172a;
+                    padding: 8px 14px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    font-size: 11px;
+                    color: #94a3b8;
+                    border-bottom: 1px solid #1e293b;
+                }
+
+                .modal-pre {
+                    padding: 16px;
+                    font-size: 12px;
+                    color: #93c5fd;
+                    line-height: 1.6;
+                    overflow-x: auto;
+                }
+
+                .gov-modal-footer {
+                    padding: 16px 24px;
+                    background: #f8fafc;
+                    border-top: 1px solid var(--gov-border-strong);
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 12px;
+                }
+
+                /* VÍDEO SIMULADO */
+                .video-player-simulation {
+                    background: #091222;
+                    border: 2px solid #000000;
+                    aspect-ratio: 16 / 9;
+                    display: grid;
+                    place-items: center;
+                    padding: 30px;
+                    color: #ffffff;
+                    text-align: center;
+                }
+
+                .player-screen-center {
+                    max-width: 500px;
+                }
+
+                .player-big-icon {
+                    color: var(--gov-blue-400);
+                    margin-bottom: 14px;
+                }
+
+                .player-screen-center h4 {
+                    font-size: 18px;
+                    font-weight: 900;
+                    margin-bottom: 8px;
+                }
+
+                .player-screen-center p {
+                    font-size: 13px;
+                    color: #94a3b8;
+                    line-height: 1.6;
+                    margin-bottom: 20px;
+                }
+
+                .player-controls-mock {
+                    background: rgba(255, 255, 255, 0.08);
+                    padding: 10px 14px;
+                    border-radius: 4px;
+                }
+
+                .play-bar-bg {
+                    height: 6px;
+                    background: #334155;
+                    border-radius: 3px;
+                    margin-bottom: 6px;
+                    overflow: hidden;
+                }
+
+                .play-bar-fill {
+                    height: 100%;
+                    background: var(--gov-blue-500);
+                }
+
+                .play-bar-times {
+                    display: flex;
+                    justify-content: space-between;
+                    font-size: 10px;
+                    color: #94a3b8;
                 }
 
                 /* ==================== FOOTER ==================== */
@@ -2599,19 +4025,23 @@ ON bens_tombados USING gin (to_tsvector('portuguese', descricao));`}</code>
                 @media (max-width: 1024px) {
                     .hero-inner-grid { grid-template-columns: 1fr; }
                     .hero-isometric-wrapper { display: none; }
-                    .util-pillars-grid { grid-template-columns: 1fr; }
+                    .problem-grid, .brutalist-tech-grid { grid-template-columns: 1fr 1fr; }
+                    .arch-layers-flow { grid-template-columns: 1fr; }
+                    .flow-arrow { display: none; }
                     .sticky-split-layout { grid-template-columns: 1fr; }
                     .sticky-nav-column { position: static; }
-                    .interfaces-cards-grid { grid-template-columns: 1fr; }
-                    .brutalist-tech-grid { grid-template-columns: repeat(2, 1fr); }
+                    .diagrams-grid, .interfaces-cards-grid { grid-template-columns: 1fr; }
+                    .video-demonstrativo-card { grid-template-columns: 1fr; }
                     .dossie-box { grid-template-columns: 1fr; }
+                    .aluno-details-grid { grid-template-columns: 1fr 1fr; }
                     .gov-footer-grid { grid-template-columns: 1fr 1fr; }
                 }
 
                 @media (max-width: 768px) {
                     .gov-topbar { display: none; }
                     .gov-nav { display: none; }
-                    .brutalist-tech-grid { grid-template-columns: 1fr; }
+                    .problem-grid, .brutalist-tech-grid { grid-template-columns: 1fr; }
+                    .aluno-details-grid { grid-template-columns: 1fr; }
                     .screen-metrics-strip { grid-template-columns: 1fr; }
                     .dash-kpi-row, .est-grid-cards { grid-template-columns: 1fr; }
                     .dash-table-head, .dash-table-row { grid-template-columns: 1fr; gap: 4px; }
