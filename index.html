@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AxisGov — Portfólio de Estágio • UniFil</title>
+    <meta name="description" content="Avaliação Bimestral de Estágio Supervisionado — UniFil. Portfólio oficial do projeto AxisGov desenvolvido em Laravel 11, React 19, TypeScript e PostgreSQL.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..900;1,300..900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="gov-site">
+        <!-- ==========================================
+            BARRA INSTITUCIONAL SUPERIOR UNIFIL
+        ========================================== -->
+        <div class="gov-topbar">
+            <div class="gov-container topbar-flex">
+                <div class="gov-topbar-left">
+                    <span class="gov-flag-mark"></span>
+                    <span class="gov-topbar-title">
+                        <strong>UniFil</strong> — CENTRO UNIVERSITÁRIO FILADÉLFIA • AVALIAÇÃO BIMESTRAL DE ESTÁGIO (ENTREGA: 14/09)
+                    </span>
+                </div>
+                <div class="gov-topbar-right">
+                    <span class="topbar-link">10,0 Pontos</span>
+                    <span class="topbar-sep">/</span>
+                    <span class="topbar-link">Engenharia de Software</span>
+                    <span class="topbar-sep">/</span>
+                    <span class="topbar-link">Ano Letivo 2024</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+            HEADER PRINCIPAL (NAVEGAÇÃO PELOS 7 ITENS)
+        ========================================== -->
+        <header class="gov-header">
+            <div class="gov-container header-flex">
+                <a href="#1-pagina-inicial" class="gov-brand">
+                    <div class="gov-brand-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            <path d="m9 12 2 2 4-4"/>
+                        </svg>
+                    </div>
+                    <div class="gov-brand-text">
+                        <span class="brand-name">
+                            Axis<strong>Gov</strong>
+                        </span>
+                        <span class="brand-tagline">PORTFÓLIO DE ESTÁGIO SUPERVISIONADO</span>
+                    </div>
+                </a>
+
+                <nav class="gov-nav">
+                    <a href="#1-pagina-inicial" class="gov-nav-link">1. Início</a>
+                    <a href="#2-sobre-o-projeto" class="gov-nav-link">2. Sobre o Projeto</a>
+                    <a href="#3-casos-e-cronograma" class="gov-nav-link">3. Casos & Cronograma</a>
+                    <a href="#4-documentacao" class="gov-nav-link">4. Documentação</a>
+                    <a href="#5-telas-e-video" class="gov-nav-link">5. Telas & Vídeo</a>
+                    <a href="#6-relatorio-estagio" class="gov-nav-link">6. Relatório</a>
+                    <a href="#7-identificacao-aluno" class="gov-nav-btn">7. Identificação</a>
+                </nav>
+            </div>
+        </header>
+
+        <main>
+            <!-- ==========================================
+                ITEM 1 DO EDITAL: PÁGINA INICIAL
+                - Nome do projeto
+                - Objetivo do sistema
+                - Breve descrição do projeto
+            ========================================== -->
+            <section id="1-pagina-inicial" class="hero-institutional">
+                <!-- TEXTURAS TÉCNICAS DE FUNDO -->
+                <div class="hero-blueprint-grid"></div>
+                <div class="hero-topographic-lines"></div>
+
+                <!-- FRAGMENTOS DE CÓDIGO E ARQUITETURA ESMAECIDOS -->
+                <div class="hero-code-watermark left">
+                    <code>// Domain Layer: Compliance & Audit Trail
+final class ProcessoEmpenhoService {
+    public function liquidar(Processo $p, Servidor $auditor): Hash {
+        DB::transaction(fn() => {
+            $p->validarConformidadeLRF();
+            $hash = AuditoriaLedger::append([
+                'autor' => $auditor->matricula,
+                'rubrica' => $p->rubrica_orcamentaria,
+                'sha256' => hash('sha256', $p->payload())
+            ]);
+            return $hash;
+        });
+    }
+}</code>
+                </div>
+
+                <div class="hero-code-watermark right">
+                    <code>-- Relational Ledger: Append-Only Trigger
+CREATE TRIGGER trg_audit_immutable
+BEFORE UPDATE OR DELETE ON auditoria_governamental
+FOR EACH ROW EXECUTE FUNCTION fn_raise_security_violation();
+
+-- Indexação Textual Concorrente
+CREATE INDEX CONCURRENTLY idx_patrimonio_gin
+ON bens_tombados USING gin (to_tsvector('portuguese', descricao));</code>
+                </div>
+
+                <div class="gov-container hero-inner-grid">
+                    <!-- COLUNA ESQUERDA: DISCURSO INSTITUCIONAL -->
+                    <div class="hero-content">
+                        <div class="hero-seal-badge">
+                            <span class="seal-dot"></span>
+                            <span>ESTRUTURA OBRIGATÓRIA 1 • PÁGINA INICIAL DO SISTEMA</span>
+                        </div>
+
+                        <h1 class="hero-title">AxisGov</h1>
+
+                        <div class="hero-objective-box">
+                            <span class="obj-tag">OBJETIVO DO SISTEMA:</span>
+                            <p>
+                                Centralizar, organizar e auditar os processos administrativos, controle de patrimônio público,
+                                gestão de suprimentos em almoxarifados e execução orçamentária fiscal, garantindo conformidade estrita
+                                com a Lei de Responsabilidade Fiscal e diretrizes de transparência pública.
+                            </p>
+                        </div>
+
+                        <p class="hero-lead">
+                            <strong>Breve descrição do projeto:</strong> O AxisGov é uma plataforma corporativa desenvolvida durante o estágio supervisionado,
+                            utilizando o ecossistema Laravel e arquitetura limpa para modernizar o controle patrimonial, requisição de materiais e gestão administrativa governamental.
+                        </p>
+
+                        <div class="hero-cta-actions">
+                            <a href="#3-casos-e-cronograma" class="btn-gov primary">
+                                <span>Casos de Uso & Cronograma</span>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="5" x2="19" y1="12" y2="12"/>
+                                    <polyline points="12 5 19 12 12 19"/>
+                                </svg>
+                            </a>
+                            <a href="#5-telas-e-video" class="btn-gov outline">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect width="14" height="12" x="2" y="6" rx="2"/>
+                                    <polygon points="22 8 16 12 22 16 22 8"/>
+                                </svg>
+                                <span>Evidências & Telas</span>
+                            </a>
+                            <a href="#6-relatorio-estagio" class="btn-gov outline">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+                                    <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+                                    <path d="M10 13h4"/>
+                                    <path d="M10 17h4"/>
+                                </svg>
+                                <span>PDF do Relatório</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- COLUNA DIREITA: TELA REAL EM PERSPECTIVA ISOMÉTRICA -->
+                    <div class="hero-isometric-wrapper">
+                        <div class="isometric-stage">
+                            <div class="browser-frame-iso">
+                                <div class="browser-header-iso">
+                                    <div class="browser-traffic-dots">
+                                        <span class="traffic-dot red"></span>
+                                        <span class="traffic-dot yellow"></span>
+                                        <span class="traffic-dot green"></span>
+                                    </div>
+                                    <div class="browser-url-iso">
+                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green">
+                                            <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                        </svg>
+                                        <span>axisgov.local / painel-geral</span>
+                                    </div>
+                                    <div class="browser-status-iso">
+                                        <span class="status-live-badge">SISTEMA ATIVO</span>
+                                    </div>
+                                </div>
+
+                                <!-- TELA REAL DO AXISGOV -->
+                                <div class="browser-body-iso real-image-body">
+                                    <img src="images/dashboard-real.png" alt="Painel Geral do AxisGov - Gestão Municipal" class="real-system-screenshot">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                ITEM 2 DO EDITAL: SOBRE O PROJETO
+                - Problema que o sistema busca resolver
+                - Tecnologias utilizadas
+                - Arquitetura ou descrição resumida da solução
+            ========================================== -->
+            <section id="2-sobre-o-projeto" class="section-utilitarian">
+                <div class="gov-container">
+                    <div class="util-header">
+                        <span class="util-kicker">ESTRUTURA OBRIGATÓRIA 2 / SOBRE O PROJETO</span>
+                        <h2 class="util-title">
+                            Diagnóstico do Problema, Escolhas Tecnológicas & Arquitetura da Solução.
+                        </h2>
+                        <p class="util-lead">
+                            O AxisGov nasceu da necessidade prática identificada durante as atividades de estágio,
+                            onde processos públicos sofrem com perda de dados, lentidão na tramitação e risco fiscal.
+                        </p>
+                    </div>
+
+                    <!-- 2.1 PROBLEMA QUE O SISTEMA BUSCA RESOLVER -->
+                    <div class="problem-statement-box">
+                        <div class="problem-header">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" x2="12" y1="8" y2="12"/>
+                                <line x1="12" x2="12.01" y1="16" y2="16"/>
+                            </svg>
+                            <h3>2.1 O Problema que o Sistema Busca Resolver</h3>
+                        </div>
+                        <div class="problem-grid">
+                            <div class="problem-card">
+                                <h4>Fragmentação & Descontrole</h4>
+                                <p>
+                                    Órgãos públicos operavam com controles em planilhas dispersas e arquivos físicos,
+                                    resultando em extravio de tombos patrimoniais, divergências no inventário de suprimentos e falhas na prestação de contas.
+                                </p>
+                            </div>
+                            <div class="problem-card">
+                                <h4>Morosidade e Falta de Trilha</h4>
+                                <p>
+                                    Ausência de uma trilha confiável de auditoria, impossibilitando apurar a autoria e data
+                                    exata de alterações em empenhos ou baixas de bens, gerando inconformidades frequentes junto ao Tribunal de Contas.
+                                </p>
+                            </div>
+                            <div class="problem-card">
+                                <h4>Sistemas Legados com Recarregamento Lento</h4>
+                                <p>
+                                    Sistemas antigos baseados em formulários com recarregamento total de página causavam perda de digitação,
+                                    quedas constantes de sessão e baixa produtividade dos servidores públicos em expediente contínuo.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2.2 TECNOLOGIAS UTILIZADAS -->
+                    <div class="tech-section-wrapper">
+                        <h3 class="section-inner-heading">2.2 Tecnologias Utilizadas na Construção do Sistema</h3>
+                        <div class="brutalist-tech-grid">
+                            <div class="brutalist-tech-item">
+                                <div class="tech-solid-line"></div>
+                                <span class="tech-category">FRAMEWORK DE BACKEND</span>
+                                <h4 class="tech-main-name">LARAVEL 11</h4>
+                                <p className="tech-description">
+                                    Framework PHP 8.4 orientado a Clean Architecture, injeção de dependência e Eloquent ORM com queries otimizadas.
+                                </p>
+                            </div>
+
+                            <div class="brutalist-tech-item">
+                                <div class="tech-solid-line"></div>
+                                <span class="tech-category">SPA REATIVO & TIPAGEM</span>
+                                <h4 class="tech-main-name">REACT 19 + TS</h4>
+                                <p class="tech-description">
+                                    Interface componentizada com TypeScript estrito, garantindo zero erros de tipo e rendering atômico.
+                                </p>
+                            </div>
+
+                            <div class="brutalist-tech-item">
+                                <div class="tech-solid-line"></div>
+                                <span class="tech-category">BANCO DE DADOS ACID</span>
+                                <h4 class="tech-main-name">POSTGRESQL 16</h4>
+                                <p class="tech-description">
+                                    Persistência relacional com integridade referencial, particionamento e triggers para trilha de auditoria Write-Once.
+                                </p>
+                            </div>
+
+                            <div class="brutalist-tech-item">
+                                <div class="tech-solid-line"></div>
+                                <span class="tech-category">PROTOCOLO DE INTEGRAÇÃO</span>
+                                <h4 class="tech-main-name">INERTIA.JS V2</h4>
+                                <p class="tech-description">
+                                    Elimina endpoints REST redundantes; une a segurança de roteamento no servidor à agilidade de um SPA sem reload.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2.3 ARQUITETURA RESUMIDA DA SOLUÇÃO -->
+                    <div class="arch-summary-box">
+                        <h3 class="section-inner-heading">2.3 Arquitetura e Descrição Resumida da Solução</h3>
+                        <div class="arch-summary-content">
+                            <p>
+                                A solução adota o padrão <strong>Clean Architecture (Arquitetura Limpa)</strong> estruturada em três camadas fundamentais:
+                            </p>
+                            <div class="arch-layers-flow">
+                                <div class="flow-step">
+                                    <span class="flow-num">Camada 1</span>
+                                    <strong>Apresentação (Client-Side)</strong>
+                                    <p>Componentes React 19 desacoplados e tipados, consumindo dados do Laravel sem APIs REST intermediárias via Inertia.js.</p>
+                                </div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-step">
+                                    <span class="flow-num">Camada 2</span>
+                                    <strong>Regras de Negócio (Services & RBAC)</strong>
+                                    <p>Controllers magros que delegam a execução a Services dedicados, validando conformidade fiscal e segregação de funções.</p>
+                                </div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-step">
+                                    <span class="flow-num">Camada 3</span>
+                                    <strong>Persistência & Auditoria (PostgreSQL)</strong>
+                                    <p>Repositórios que persistem dados em transações atômicas (ACID) e gravam hashes imutáveis em log append-only.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                ITEM 3 DO EDITAL: CASOS DE USO & CRONOGRAMA
+                - Apresentar todos os casos de uso previstos
+                - Cronograma em formato de TABELA com datas/previsões
+            ========================================== -->
+            <section id="3-casos-e-cronograma" class="section-sticky-cases">
+                <div class="gov-container">
+                    <div class="sticky-cases-header">
+                        <span class="util-kicker">ESTRUTURA OBRIGATÓRIA 3 / CASOS DE USO & CRONOGRAMA</span>
+                        <h2 class="util-title">
+                            Casos de Uso Previstos & Cronograma de Desenvolvimento.
+                        </h2>
+                        <p class="util-lead">
+                            Abaixo estão detalhados os casos de uso previstos para a plataforma, acompanhados da respectiva
+                            tabela de cronograma de desenvolvimento que reflete a evolução real durante o bimestre de estágio.
+                        </p>
+                    </div>
+
+                    <!-- 3.1 CASOS DE USO PREVISTOS (INTERATIVO COM TELAS REAIS) -->
+                    <div class="sticky-split-layout">
+                        <div class="sticky-nav-column">
+                            <div class="sticky-nav-inner">
+                                <p class="sticky-instruction">3.1 NAVEGAR PELOS CASOS DE USO:</p>
+                                <nav class="sticky-links-list">
+                                    <button type="button" class="sticky-link-btn active">
+                                        <div class="btn-num">01</div>
+                                        <div class="btn-text">
+                                            <span class="btn-cat">SEGURANÇA & ACESSO</span>
+                                            <strong class="btn-title">UC01 — Efetuar Login / Logout & Gerenciar Perfil</strong>
+                                        </div>
+                                    </button>
+                                    <button type="button" class="sticky-link-btn">
+                                        <div class="btn-num">02</div>
+                                        <div class="btn-text">
+                                            <span class="btn-cat">GESTÃO DE ESTOQUE</span>
+                                            <strong class="btn-title">UC02 — Gerenciar Produtos & Registrar Movimentações</strong>
+                                        </div>
+                                    </button>
+                                    <button type="button" class="sticky-link-btn">
+                                        <div class="btn-num">03</div>
+                                        <div class="btn-text">
+                                            <span class="btn-cat">GESTÃO DE PEDIDOS</span>
+                                            <strong class="btn-title">UC03 — Aprovar / Rejeitar Pedidos de Material</strong>
+                                        </div>
+                                    </button>
+                                    <button type="button" class="sticky-link-btn">
+                                        <div class="btn-num">04</div>
+                                        <div class="btn-text">
+                                            <span class="btn-cat">ADMINISTRAÇÃO DO SISTEMA</span>
+                                            <strong class="btn-title">UC04 — Gerenciar Usuários, Secretarias & Categorias</strong>
+                                        </div>
+                                    </button>
+                                </nav>
+                            </div>
+                        </div>
+
+                        <div class="sticky-screens-column">
+                            <!-- CASO 01 -->
+                            <div id="case-anchor-0" data-case-index="0" class="sticky-screen-block">
+                                <div class="screen-detail-header">
+                                    <div class="screen-tag-row">
+                                        <span class="screen-num font-mono">01 / 04</span>
+                                        <span class="screen-label">SEGURANÇA & ACESSO</span>
+                                    </div>
+                                    <h3 class="screen-title">UC01 — Efetuar Login / Logout & Gerenciar Perfil</h3>
+                                    <p class="screen-actors-badge">Ator: Usuário (todos os perfis do sistema)</p>
+                                    <p class="screen-desc">
+                                        Autenticação segura no portal AxisGov via e-mail e senha, com redirecionamento automático conforme perfil RBAC cadastrado (Administrador, Secretário, Diretor, Responsável pelo Estoque). Suporte a edição de nome, telefone e redefinição de senha com confirmação obrigatória.
+                                    </p>
+                                    <div class="screen-regulation">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                            <path d="m9 12 2 2 4-4"/>
+                                        </svg>
+                                        <span>Lei 13.709/2018 (LGPD) Art. 46 • Middleware Laravel Auth • Proteção por sessão</span>
+                                    </div>
+                                </div>
+
+                                <!-- MOCKUP TELA AUTH -->
+                                <div class="browser-frame-hard">
+                                    <div class="browser-bar-minimal">
+                                        <div class="bar-dots"><span></span><span></span><span></span></div>
+                                        <div class="bar-address"><span>axisgov.local / login</span></div>
+                                    </div>
+                                    <div class="browser-content-wrap">
+                                        <div class="sys-screen auth-screen">
+                                            <div class="auth-layout">
+                                                <div class="auth-panel-left">
+                                                    <div class="gov-seal">
+                                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                                            <path d="m9 12 2 2 4-4"/>
+                                                        </svg>
+                                                    </div>
+                                                    <h3>AxisGov • Acesso Seguro</h3>
+                                                    <p>Plataforma Integrada de Gestão Pública Municipal. Controle de acesso por perfil (RBAC).</p>
+                                                    <div class="cert-badge">
+                                                        <span class="cert-dot"></span>
+                                                        <span>Sessão Protegida • Laravel Sanctum</span>
+                                                    </div>
+                                                </div>
+                                                <div class="auth-panel-right">
+                                                    <div class="auth-card-mock">
+                                                        <span class="mock-label">PORTAL INSTITUCIONAL • AUTENTICAÇÃO</span>
+                                                        <h4 class="mock-title">Identificação do Usuário</h4>
+                                                        <div class="mock-field">
+                                                            <label>E-mail Institucional</label>
+                                                            <div class="mock-input">admin@axisgov.pr.gov.br</div>
+                                                        </div>
+                                                        <div class="mock-field">
+                                                            <label>Senha de Acesso</label>
+                                                            <div class="mock-input code-dots">● ● ● ● ● ● ● ●</div>
+                                                        </div>
+                                                        <div class="mock-field">
+                                                            <label>Perfil de Acesso (RBAC)</label>
+                                                            <div class="mock-input text-blue font-bold">Administrador do Sistema (Nível 1)</div>
+                                                        </div>
+                                                        <div class="mock-btn-row">
+                                                            <div class="mock-btn primary">Acessar Painel</div>
+                                                            <div class="mock-btn secondary">Alterar Senha</div>
+                                                        </div>
+                                                        <div class="mock-footer-sec">
+                                                            <span>Middleware Auth • Restrição de Inativos (ativo = true)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CASO 02 -->
+                            <div id="case-anchor-1" data-case-index="1" class="sticky-screen-block">
+                                <div class="screen-detail-header">
+                                    <div class="screen-tag-row">
+                                        <span class="screen-num font-mono">02 / 04</span>
+                                        <span class="screen-label">GESTÃO DE ESTOQUE</span>
+                                    </div>
+                                    <h3 class="screen-title">UC02 — Gerenciar Produtos & Registrar Movimentações</h3>
+                                    <p class="screen-actors-badge">Ator: Administrador / Responsável pelo Estoque</p>
+                                    <p class="screen-desc">
+                                        Cadastro e manutenção do catálogo de insumos públicos (código único, nome, categoria, valor unitário). Registro transacional de entradas e saídas de estoque com validação de saldo, lock pessimista no banco de dados e geração automática de histórico de movimentações rastreável.
+                                    </p>
+                                    <div class="screen-regulation">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                            <path d="m9 12 2 2 4-4"/>
+                                        </svg>
+                                        <span>Nova Lei de Licitações (Lei 14.133/2021) • Soft Deletes para integridade histórica</span>
+                                    </div>
+                                </div>
+
+                                <!-- MOCKUP TELA ESTOQUE -->
+                                <div class="browser-frame-hard">
+                                    <div class="browser-bar-minimal">
+                                        <div class="bar-dots"><span></span><span></span><span></span></div>
+                                        <div class="bar-address"><span>axisgov.local / almoxarifado / catalogo</span></div>
+                                    </div>
+                                    <div class="browser-content-wrap">
+                                        <div class="sys-screen est-screen">
+                                            <div class="dash-top-bar">
+                                                <div class="dash-heading">
+                                                    <span class="dash-pill">ALMOXARIFADO CENTRAL</span>
+                                                    <h4>Catálogo de Produtos & Controle de Saldo de Insumos</h4>
+                                                </div>
+                                                <div class="dash-actions">
+                                                    <span class="dash-filter">Validação Atômica (DB::transaction)</span>
+                                                </div>
+                                            </div>
+                                            <div class="est-grid-cards">
+                                                <div class="est-card-item">
+                                                    <span class="est-code font-mono">COD-1042 • MAT. EXPEDIENTE</span>
+                                                    <h5>Papel Sulfite A4 75g (Caixa c/ 10 resmas)</h5>
+                                                    <div class="est-bar-wrap">
+                                                        <div class="est-bar-fill" style="width: 78%;"></div>
+                                                    </div>
+                                                    <div class="est-meta-row">
+                                                        <span>Saldo: 450 caixas</span>
+                                                        <span class="text-green font-bold">Saldo Adequado</span>
+                                                    </div>
+                                                </div>
+                                                <div class="est-card-item">
+                                                    <span class="est-code font-mono">COD-2015 • SAÚDE & HIGIENE</span>
+                                                    <h5>Álcool em Gel 70% Hospitalar 5 Litros</h5>
+                                                    <div class="est-bar-wrap">
+                                                        <div class="est-bar-fill alert" style="width: 22%;"></div>
+                                                    </div>
+                                                    <div class="est-meta-row">
+                                                        <span>Saldo: 38 galões</span>
+                                                        <span class="text-amber font-bold">Ponto de Reposição</span>
+                                                    </div>
+                                                </div>
+                                                <div class="est-card-item">
+                                                    <span class="est-code font-mono">COD-1088 • INFORMÁTICA</span>
+                                                    <h5>Cartucho de Toner HP Laser Jet 85A</h5>
+                                                    <div class="est-bar-wrap">
+                                                        <div class="est-bar-fill" style="width: 65%;"></div>
+                                                    </div>
+                                                    <div class="est-meta-row">
+                                                        <span>Saldo: 24 unidades</span>
+                                                        <span class="text-green font-bold">Regular</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CASO 03 -->
+                            <div id="case-anchor-2" data-case-index="2" class="sticky-screen-block">
+                                <div class="screen-detail-header">
+                                    <div class="screen-tag-row">
+                                        <span class="screen-num font-mono">03 / 04</span>
+                                        <span class="screen-label">GESTÃO DE PEDIDOS</span>
+                                    </div>
+                                    <h3 class="screen-title">UC03 — Aprovar / Rejeitar Pedidos de Material</h3>
+                                    <p class="screen-actors-badge">Ator: Administrador (aprovação) • Diretor (criação e acompanhamento)</p>
+                                    <p class="screen-desc">
+                                        Fluxo completo de requisição de materiais entre unidades descentralizadas (escolas, setores) e o almoxarifado central. O Diretor cria e acompanha pedidos com status em tempo real; o Administrador analisa e transita o status entre Pendente → Aprovado ou Rejeitado com justificativa formal.
+                                    </p>
+                                    <div class="screen-regulation">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                            <path d="m9 12 2 2 4-4"/>
+                                        </svg>
+                                        <span>Princípio da Eficiência (Art. 37 CF/88) • StatusPedido: PENDENTE / APROVADO / REJEITADO</span>
+                                    </div>
+                                </div>
+
+                                <!-- MOCKUP TELA DASHBOARD / PEDIDOS -->
+                                <div class="browser-frame-hard">
+                                    <div class="browser-bar-minimal">
+                                        <div class="bar-dots"><span></span><span></span><span></span></div>
+                                        <div class="bar-address"><span>axisgov.local / pedidos / fila-aprovacao</span></div>
+                                    </div>
+                                    <div class="browser-content-wrap">
+                                        <div class="sys-screen dash-screen">
+                                            <div class="dash-top-bar">
+                                                <div class="dash-heading">
+                                                    <span class="dash-pill">MÓDULO DE PEDIDOS</span>
+                                                    <h4>Requisições de Material entre Secretarias & Almoxarifado</h4>
+                                                </div>
+                                                <div class="dash-actions">
+                                                    <span class="dash-filter">Aprovação Pendente (Admin)</span>
+                                                </div>
+                                            </div>
+                                            <div class="dash-kpi-row">
+                                                <div class="dash-stat">
+                                                    <span class="stat-label">Pedidos Pendentes</span>
+                                                    <span class="stat-val text-amber">04</span>
+                                                    <span class="stat-sub">Aguardando Avaliação</span>
+                                                </div>
+                                                <div class="dash-stat">
+                                                    <span class="stat-label">Pedidos Aprovados</span>
+                                                    <span class="stat-val text-green">28</span>
+                                                    <span class="stat-sub">Liberados para Entrega</span>
+                                                </div>
+                                                <div class="dash-stat">
+                                                    <span class="stat-label">Pedidos Rejeitados</span>
+                                                    <span class="stat-val text-muted">02</span>
+                                                    <span class="stat-sub">Com Devolutiva Formal</span>
+                                                </div>
+                                            </div>
+                                            <div class="dash-table-wrap">
+                                                <div class="dash-table-head">
+                                                    <span>PEDIDO #</span>
+                                                    <span>SOLICITANTE / SECRETARIA</span>
+                                                    <span>PRODUTO REQUISITADO</span>
+                                                    <span>QTD</span>
+                                                    <span>STATUS</span>
+                                                </div>
+                                                <div class="dash-table-row">
+                                                    <span class="font-mono font-bold text-blue">PED-2026-088</span>
+                                                    <span>Diretoria Escolar • Sec. Educação</span>
+                                                    <span>Papel A4 75g (Resma 500fls)</span>
+                                                    <span class="font-mono">50 cx</span>
+                                                    <span><span class="table-badge amber">PENDENTE</span></span>
+                                                </div>
+                                                <div class="dash-table-row">
+                                                    <span class="font-mono font-bold text-blue">PED-2026-087</span>
+                                                    <span>UPA Central • Sec. Saúde</span>
+                                                    <span>Álcool em Gel 70% 5L</span>
+                                                    <span class="font-mono">20 gal</span>
+                                                    <span><span class="table-badge green">APROVADO</span></span>
+                                                </div>
+                                                <div class="dash-table-row">
+                                                    <span class="font-mono font-bold text-blue">PED-2026-086</span>
+                                                    <span>Fiscalização • Sec. Obras</span>
+                                                    <span>Prancheta Acrílica Ofício</span>
+                                                    <span class="font-mono">15 un</span>
+                                                    <span><span class="table-badge green">APROVADO</span></span>
+                                                </div>
+                                                <div class="dash-table-row">
+                                                    <span class="font-mono font-bold text-blue">PED-2026-085</span>
+                                                    <span>Gabinete • Sec. Administração</span>
+                                                    <span>Toner HP Laser Jet 85A</span>
+                                                    <span class="font-mono">04 un</span>
+                                                    <span><span class="table-badge blue">REJEITADO</span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CASO 04 -->
+                            <div id="case-anchor-3" data-case-index="3" class="sticky-screen-block">
+                                <div class="screen-detail-header">
+                                    <div class="screen-tag-row">
+                                        <span class="screen-num font-mono">04 / 04</span>
+                                        <span class="screen-label">ADMINISTRAÇÃO DO SISTEMA</span>
+                                    </div>
+                                    <h3 class="screen-title">UC04 — Gerenciar Usuários, Secretarias & Categorias</h3>
+                                    <p class="screen-actors-badge">Ator: Administrador do Sistema</p>
+                                    <p class="screen-desc">
+                                        Gestão completa dos cadastros mestres do AxisGov: criação, edição, inativação e exclusão de usuários com atribuição de perfil RBAC; parametrização de Secretarias Municipais (nome, sigla, endereço, vinculação de diretores); e manutenção da taxonomia de categorias de materiais para o catálogo de produtos.
+                                    </p>
+                                    <div class="screen-regulation">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                            <path d="m9 12 2 2 4-4"/>
+                                        </svg>
+                                        <span>Controle de acesso por role: ROLE_ADMIN=1 • Soft Deletes em todas as entidades</span>
+                                    </div>
+                                </div>
+
+                                <!-- MOCKUP TELA USUARIOS -->
+                                <div class="browser-frame-hard">
+                                    <div class="browser-bar-minimal">
+                                        <div class="bar-dots"><span></span><span></span><span></span></div>
+                                        <div class="bar-address"><span>axisgov.local / admin / usuarios</span></div>
+                                    </div>
+                                    <div class="browser-content-wrap">
+                                        <div class="sys-screen pat-screen">
+                                            <div class="dash-top-bar">
+                                                <div class="dash-heading">
+                                                    <span class="dash-pill">ADMINISTRAÇÃO GERAL</span>
+                                                    <h4>Gestão de Secretarias Municipais & Matriz de Usuários</h4>
+                                                </div>
+                                                <div class="dash-actions">
+                                                    <span class="dash-filter">34 Usuários • 6 Secretarias</span>
+                                                </div>
+                                            </div>
+                                            <div class="pat-table-wrap">
+                                                <div class="dash-table-head">
+                                                    <span>ID / MAT.</span>
+                                                    <span>USUÁRIO / SERVIDOR</span>
+                                                    <span>SECRETARIA VINCULADA</span>
+                                                    <span>PERFIL RBAC</span>
+                                                    <span>SITUAÇÃO</span>
+                                                </div>
+                                                <div class="dash-table-row">
+                                                    <span class="font-mono text-blue font-bold">USR-001</span>
+                                                    <div>
+                                                        <strong class="font-bold">Carlos Eduardo Mendes</strong>
+                                                        <div class="text-muted" style="font-size: 11px;">carlos.mendes@axisgov.pr.gov.br</div>
+                                                    </div>
+                                                    <span class="text-muted">Secretaria Geral de Administração</span>
+                                                    <span class="font-mono text-blue">ADMINISTRADOR</span>
+                                                    <span><span class="table-badge green">ATIVO</span></span>
+                                                </div>
+                                                <div class="dash-table-row">
+                                                    <span class="font-mono text-blue font-bold">USR-004</span>
+                                                    <div>
+                                                        <strong class="font-bold">Dra. Mariana Vasconcelos</strong>
+                                                        <div class="text-muted" style="font-size: 11px;">mariana.saude@axisgov.pr.gov.br</div>
+                                                    </div>
+                                                    <span class="text-muted">Secretaria Municipal de Saúde</span>
+                                                    <span class="font-mono text-blue">SECRETÁRIO</span>
+                                                    <span><span class="table-badge green">ATIVO</span></span>
+                                                </div>
+                                                <div class="dash-table-row">
+                                                    <span class="font-mono text-blue font-bold">USR-009</span>
+                                                    <div>
+                                                        <strong class="font-bold">Prof. Roberto Alcantara</strong>
+                                                        <div class="text-muted" style="font-size: 11px;">roberto.escola@axisgov.pr.gov.br</div>
+                                                    </div>
+                                                    <span class="text-muted">Secretaria Municipal de Educação</span>
+                                                    <span class="font-mono text-blue">DIRETOR</span>
+                                                    <span><span class="table-badge green">ATIVO</span></span>
+                                                </div>
+                                                <div class="dash-table-row">
+                                                    <span class="font-mono text-blue font-bold">USR-014</span>
+                                                    <div>
+                                                        <strong class="font-bold">Valmir Ferreira dos Santos</strong>
+                                                        <div class="text-muted" style="font-size: 11px;">valmir.estoque@axisgov.pr.gov.br</div>
+                                                    </div>
+                                                    <span class="text-muted">Almoxarifado Central</span>
+                                                    <span class="font-mono text-blue">RESPONSÁVEL ESTOQUE</span>
+                                                    <span><span class="table-badge green">ATIVO</span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3.2 CRONOGRAMA DE DESENVOLVIMENTO EM TABELA (EXIGÊNCIA UNIFIL) -->
+                    <div class="schedule-table-section">
+                        <div class="schedule-header">
+                            <div class="schedule-header-left">
+                                <span class="table-badge-gov">EXIGÊNCIA EDITAL UNIFIL</span>
+                                <h3 class="schedule-title">3.2 Cronograma de Desenvolvimento do Estágio (Formato Tabela)</h3>
+                                <p class="schedule-subtitle">
+                                    Evolução cronológica alinhada ao planejamento bimestral de estágio e status real de implementação de cada caso de uso.
+                                </p>
+                            </div>
+                            <div class="schedule-header-right">
+                                <span class="status-period-pill">Bimestre: Agosto — Setembro / 2024</span>
+                            </div>
+                        </div>
+
+                        <div class="gov-table-container">
+                            <table class="official-gov-table">
+                                <thead>
+                                    <tr>
+                                        <th>CÓDIGO</th>
+                                        <th>CASO DE USO / ATIVIDADE</th>
+                                        <th>MÓDULO DO SISTEMA</th>
+                                        <th>DATA DE INÍCIO</th>
+                                        <th>TÉRMINO / PREVISÃO</th>
+                                        <th>RESPONSÁVEL</th>
+                                        <th>STATUS DE EXECUÇÃO</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="font-mono font-bold text-blue">UC01</td>
+                                        <td class="font-bold">Efetuar Login / Logout & Gerenciar Perfil e Senha</td>
+                                        <td class="text-muted">Módulo 01: Autenticação & Segurança (RBAC)</td>
+                                        <td class="font-mono">18/04/2026</td>
+                                        <td class="font-mono font-bold">25/04/2026</td>
+                                        <td>Samir Chehade</td>
+                                        <td><span class="status-pill-table done">Concluído</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-mono font-bold text-blue">UC02</td>
+                                        <td class="font-bold">Gerenciar Categorias de Materiais</td>
+                                        <td class="text-muted">Módulo 02: Catálogo de Produtos</td>
+                                        <td class="font-mono">24/04/2026</td>
+                                        <td class="font-mono font-bold">30/04/2026</td>
+                                        <td>Samir Chehade</td>
+                                        <td><span class="status-pill-table done">Concluído</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-mono font-bold text-blue">UC03</td>
+                                        <td class="font-bold">Gerenciar Produtos (Cadastro, Edição, Inativação)</td>
+                                        <td class="text-muted">Módulo 02: Catálogo de Produtos</td>
+                                        <td class="font-mono">24/04/2026</td>
+                                        <td class="font-mono font-bold">08/05/2026</td>
+                                        <td>Samir Chehade</td>
+                                        <td><span class="status-pill-table done">Concluído</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-mono font-bold text-blue">UC04</td>
+                                        <td class="font-bold">Registrar Entrada de Estoque (DB Transaction)</td>
+                                        <td class="text-muted">Módulo 03: Almoxarifado & Estoque</td>
+                                        <td class="font-mono">24/04/2026</td>
+                                        <td class="font-mono font-bold">15/05/2026</td>
+                                        <td>Samir Chehade</td>
+                                        <td><span class="status-pill-table done">Concluído</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-mono font-bold text-blue">UC05</td>
+                                        <td class="font-bold">Registrar Saída de Estoque (Lock Pessimista)</td>
+                                        <td class="text-muted">Módulo 03: Almoxarifado & Estoque</td>
+                                        <td class="font-mono">15/05/2026</td>
+                                        <td class="font-mono font-bold">30/05/2026</td>
+                                        <td>Samir Chehade</td>
+                                        <td><span class="status-pill-table done">Concluído</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-mono font-bold text-blue">UC06</td>
+                                        <td class="font-bold">Consultar Histórico de Movimentações</td>
+                                        <td class="text-muted">Módulo 03: Almoxarifado & Estoque</td>
+                                        <td class="font-mono">30/05/2026</td>
+                                        <td class="font-mono font-bold">10/06/2026</td>
+                                        <td>Samir Chehade</td>
+                                        <td><span class="status-pill-table done">Concluído</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-mono font-bold text-blue">UC07</td>
+                                        <td class="font-bold">Gerenciar Secretarias Municipais</td>
+                                        <td class="text-muted">Módulo 04: Administração do Sistema</td>
+                                        <td class="font-mono">18/04/2026</td>
+                                        <td class="font-mono font-bold">28/04/2026</td>
+                                        <td>Samir Chehade</td>
+                                        <td><span class="status-pill-table done">Concluído</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-mono font-bold text-blue">UC08</td>
+                                        <td class="font-bold">Gerenciar Usuários & Atribuição de Perfis RBAC</td>
+                                        <td class="text-muted">Módulo 04: Administração do Sistema</td>
+                                        <td class="font-mono">18/04/2026</td>
+                                        <td class="font-mono font-bold">10/05/2026</td>
+                                        <td>Samir Chehade</td>
+                                        <td><span class="status-pill-table done">Concluído</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-mono font-bold text-blue">UC09</td>
+                                        <td class="font-bold">Criar Pedido de Material (Diretor → Almoxarifado)</td>
+                                        <td class="text-muted">Módulo 05: Fluxo de Requisições</td>
+                                        <td class="font-mono">05/10/2026</td>
+                                        <td class="font-mono font-bold">16/10/2026</td>
+                                        <td>Samir Chehade</td>
+                                        <td><span class="status-pill-table plan">Planejado</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-mono font-bold text-blue">UC10</td>
+                                        <td class="font-bold">Acompanhar / Editar Pedidos Próprios</td>
+                                        <td class="text-muted">Módulo 05: Fluxo de Requisições</td>
+                                        <td class="font-mono">19/10/2026</td>
+                                        <td class="font-mono font-bold">30/10/2026</td>
+                                        <td>Samir Chehade</td>
+                                        <td><span class="status-pill-table plan">Planejado</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-mono font-bold text-blue">UC11</td>
+                                        <td class="font-bold">Aprovar / Rejeitar Pedidos de Material</td>
+                                        <td class="text-muted">Módulo 05: Fluxo de Requisições</td>
+                                        <td class="font-mono">03/11/2026</td>
+                                        <td class="font-mono font-bold">13/11/2026</td>
+                                        <td>Samir Chehade</td>
+                                        <td><span class="status-pill-table plan">Planejado</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-mono font-bold text-blue">UC12</td>
+                                        <td class="font-bold">Soft Deletes em Todas as Entidades</td>
+                                        <td class="text-muted">Módulo 06: Integridade de Dados</td>
+                                        <td class="font-mono">16/11/2026</td>
+                                        <td class="font-mono font-bold">24/11/2026</td>
+                                        <td>Samir Chehade</td>
+                                        <td><span class="status-pill-table plan">Planejado</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-mono font-bold text-blue">UC13</td>
+                                        <td class="font-bold">Visualizar Painel da Secretaria (Dashboard)</td>
+                                        <td class="text-muted">Módulo 04: Administração do Sistema</td>
+                                        <td class="font-mono">25/11/2026</td>
+                                        <td class="font-mono font-bold">30/11/2026</td>
+                                        <td>Samir Chehade</td>
+                                        <td><span class="status-pill-table plan">Planejado</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                ITEM 4 DO EDITAL: DOCUMENTAÇÃO
+                - Links para todos os diagramas desenvolvidos
+            ========================================== -->
+            <section id="4-documentacao" class="section-diagrams-official">
+                <div class="gov-container">
+                    <div class="util-header">
+                        <span class="util-kicker">ESTRUTURA OBRIGATÓRIA 4 / DOCUMENTAÇÃO TÉCNICA</span>
+                        <h2 class="util-title">
+                            Diagramas de Engenharia de Software Desenvolvidos no Estágio.
+                        </h2>
+                        <p class="util-lead">
+                            Todos os diagramas elaborados durante o projeto encontram-se disponíveis abaixo com
+                            acesso livre e sem necessidade de solicitação de permissão, em conformidade com as regras da UniFil.
+                        </p>
+                    </div>
+
+                    <div class="diagrams-grid">
+                        <!-- CARD 1 -->
+                        <div class="diagram-card-gov"
+                             data-diag-title="Diagrama de Casos de Uso"
+                             data-diag-type="Casos de Uso"
+                             data-diag-image="images/diagrams/UseCase Diagram0.png"
+                             data-diag-desc="Diagrama UML completo com os 4 atores do AxisGov: Usuário (Login/Logout, Gerenciar Perfil), Administrador (8 casos de uso: Produtos, Estoque, Secretarias, Usuários, Pedidos), Diretor (Criar e Acompanhar Pedidos) e Secretário (Painel da Secretaria).">
+                            <div class="diag-card-top">
+                                <span class="diag-type-badge font-mono">Casos de Uso</span>
+                                <button type="button" class="btn-open-diag" data-diag-trigger>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                                    </svg>
+                                    <span>Expandir Diagrama</span>
+                                </button>
+                            </div>
+                            <h3 class="diag-title">Diagrama de Casos de Uso</h3>
+                            <p class="diag-desc">
+                                Diagrama UML completo com os 4 atores do AxisGov: Usuário (Login/Logout, Gerenciar Perfil), Administrador (8 casos de uso: Produtos, Estoque, Secretarias, Usuários, Pedidos), Diretor (Criar e Acompanhar Pedidos) e Secretário (Painel da Secretaria).
+                            </p>
+                            <div class="diag-image-preview" data-diag-trigger title="Clique para ampliar">
+                                <img src="images/diagrams/UseCase Diagram0.png" alt="Diagrama de Casos de Uso" class="diag-thumb-img" loading="lazy">
+                                <div class="diag-image-overlay">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                                    </svg>
+                                    <span>Ampliar Diagrama</span>
+                                </div>
+                            </div>
+                            <div class="diag-card-footer">
+                                <button type="button" class="link-diag-action" data-diag-trigger>
+                                    <span>Ver diagrama completo</span>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="5" x2="19" y1="12" y2="12"/>
+                                        <polyline points="12 5 19 12 12 19"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- CARD 2 -->
+                        <div class="diagram-card-gov"
+                             data-diag-title="Diagrama de Classes (Domínio de Negócio)"
+                             data-diag-type="Classes"
+                             data-diag-image="images/diagrams/Class Diagram0.png"
+                             data-diag-desc="Estrutura OO completa: entidades User (com RoleEnum: ADMIN=1, SECRETARIO=2, DIRETOR=3, USER=4, RESPONSAVEL_ESTOQUE=5), Secretaria, Categoria, Produto, Movimentacao (com TipoMovimentacao: entrada/saida), Pedido (com StatusPedido: pendente/aprovado/rejeitado).">
+                            <div class="diag-card-top">
+                                <span class="diag-type-badge font-mono">Classes</span>
+                                <button type="button" class="btn-open-diag" data-diag-trigger>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                                    </svg>
+                                    <span>Expandir Diagrama</span>
+                                </button>
+                            </div>
+                            <h3 class="diag-title">Diagrama de Classes (Domínio de Negócio)</h3>
+                            <p class="diag-desc">
+                                Estrutura OO completa: entidades User (com RoleEnum: ADMIN=1, SECRETARIO=2, DIRETOR=3, USER=4, RESPONSAVEL_ESTOQUE=5), Secretaria, Categoria, Produto, Movimentacao (com TipoMovimentacao: entrada/saida), Pedido (com StatusPedido: pendente/aprovado/rejeitado).
+                            </p>
+                            <div class="diag-image-preview" data-diag-trigger title="Clique para ampliar">
+                                <img src="images/diagrams/Class Diagram0.png" alt="Diagrama de Classes" class="diag-thumb-img" loading="lazy">
+                                <div class="diag-image-overlay">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                                    </svg>
+                                    <span>Ampliar Diagrama</span>
+                                </div>
+                            </div>
+                            <div class="diag-card-footer">
+                                <button type="button" class="link-diag-action" data-diag-trigger>
+                                    <span>Ver diagrama completo</span>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="5" x2="19" y1="12" y2="12"/>
+                                        <polyline points="12 5 19 12 12 19"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- CARD 3 -->
+                        <div class="diagram-card-gov"
+                             data-diag-title="Diagrama de Sequência: Gerenciar Produto"
+                             data-diag-type="Sequência"
+                             data-diag-image="images/diagrams/Gerenciar Produto - Diagrama Sequencia.png"
+                             data-diag-desc="Fluxo completo de Cadastrar e Deletar Produto: Responsável Estoque → Interface AxisGov → ProdutoController → Banco de Dados. Cobre cenários de dados válidos (HTTP 200 Sucesso), dados inválidos (HTTP 400 Erro) e exclusão com confirmação de status.">
+                            <div class="diag-card-top">
+                                <span class="diag-type-badge font-mono">Sequência</span>
+                                <button type="button" class="btn-open-diag" data-diag-trigger>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                                    </svg>
+                                    <span>Expandir Diagrama</span>
+                                </button>
+                            </div>
+                            <h3 class="diag-title">Diagrama de Sequência: Gerenciar Produto</h3>
+                            <p class="diag-desc">
+                                Fluxo completo de Cadastrar e Deletar Produto: Responsável Estoque → Interface AxisGov → ProdutoController → Banco de Dados. Cobre cenários de dados válidos (HTTP 200 Sucesso), dados inválidos (HTTP 400 Erro) e exclusão com confirmação de status.
+                            </p>
+                            <div class="diag-image-preview" data-diag-trigger title="Clique para ampliar">
+                                <img src="images/diagrams/Gerenciar Produto - Diagrama Sequencia.png" alt="Diagrama de Sequência: Gerenciar Produto" class="diag-thumb-img" loading="lazy">
+                                <div class="diag-image-overlay">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                                    </svg>
+                                    <span>Ampliar Diagrama</span>
+                                </div>
+                            </div>
+                            <div class="diag-card-footer">
+                                <button type="button" class="link-diag-action" data-diag-trigger>
+                                    <span>Ver diagrama completo</span>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="5" x2="19" y1="12" y2="12"/>
+                                        <polyline points="12 5 19 12 12 19"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- CARD 4 -->
+                        <div class="diagram-card-gov"
+                             data-diag-title="Diagrama de Sequência: Gerenciar Usuário"
+                             data-diag-type="Sequência"
+                             data-diag-image="images/diagrams/Gerenciar Usuario - Diagrama Sequencia.png"
+                             data-diag-desc="Fluxo CRUD completo de Usuário realizado pelo Secretário: Adicionar (com verificação de duplicidade), Deletar (com consulta de existência) e Atualizar (com formulário de visualização e persistência). Cobre todos os cenários de erro 409, 400 e sucesso 200.">
+                            <div class="diag-card-top">
+                                <span class="diag-type-badge font-mono">Sequência</span>
+                                <button type="button" class="btn-open-diag" data-diag-trigger>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                                    </svg>
+                                    <span>Expandir Diagrama</span>
+                                </button>
+                            </div>
+                            <h3 class="diag-title">Diagrama de Sequência: Gerenciar Usuário</h3>
+                            <p class="diag-desc">
+                                Fluxo CRUD completo de Usuário realizado pelo Secretário: Adicionar (com verificação de duplicidade), Deletar (com consulta de existência) e Atualizar (com formulário de visualização e persistência). Cobre todos os cenários de erro 409, 400 e sucesso 200.
+                            </p>
+                            <div class="diag-image-preview" data-diag-trigger title="Clique para ampliar">
+                                <img src="images/diagrams/Gerenciar Usuario - Diagrama Sequencia.png" alt="Diagrama de Sequência: Gerenciar Usuário" class="diag-thumb-img" loading="lazy">
+                                <div class="diag-image-overlay">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                                    </svg>
+                                    <span>Ampliar Diagrama</span>
+                                </div>
+                            </div>
+                            <div class="diag-card-footer">
+                                <button type="button" class="link-diag-action" data-diag-trigger>
+                                    <span>Ver diagrama completo</span>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="5" x2="19" y1="12" y2="12"/>
+                                        <polyline points="12 5 19 12 12 19"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- CARD 5 -->
+                        <div class="diagram-card-gov"
+                             data-diag-title="Diagrama de Sequência: Registrar Entrada de Estoque"
+                             data-diag-type="Sequência"
+                             data-diag-image="images/diagrams/Registrar Entrada - Diagrama Sequencia.png"
+                             data-diag-desc="Fluxo de registro de nova entrada de material no almoxarifado: Responsável Estoque → Interface AxisGov → EntradaController → Banco de Dados. Validação de dados com retorno HTTP 201 (sucesso) ou HTTP 400 (dados inválidos).">
+                            <div class="diag-card-top">
+                                <span class="diag-type-badge font-mono">Sequência</span>
+                                <button type="button" class="btn-open-diag" data-diag-trigger>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                                    </svg>
+                                    <span>Expandir Diagrama</span>
+                                </button>
+                            </div>
+                            <h3 class="diag-title">Diagrama de Sequência: Registrar Entrada de Estoque</h3>
+                            <p class="diag-desc">
+                                Fluxo de registro de nova entrada de material no almoxarifado: Responsável Estoque → Interface AxisGov → EntradaController → Banco de Dados. Validação de dados com retorno HTTP 201 (sucesso) ou HTTP 400 (dados inválidos).
+                            </p>
+                            <div class="diag-image-preview" data-diag-trigger title="Clique para ampliar">
+                                <img src="images/diagrams/Registrar Entrada - Diagrama Sequencia.png" alt="Diagrama de Sequência: Registrar Entrada" class="diag-thumb-img" loading="lazy">
+                                <div class="diag-image-overlay">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                                    </svg>
+                                    <span>Ampliar Diagrama</span>
+                                </div>
+                            </div>
+                            <div class="diag-card-footer">
+                                <button type="button" class="link-diag-action" data-diag-trigger>
+                                    <span>Ver diagrama completo</span>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="5" x2="19" y1="12" y2="12"/>
+                                        <polyline points="12 5 19 12 12 19"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- CARD 6 -->
+                        <div class="diagram-card-gov"
+                             data-diag-title="Diagrama de Estados: Ciclo de Vida do Pedido"
+                             data-diag-type="Estados"
+                             data-diag-image="images/diagrams/Pedido-Secretaria.png"
+                             data-diag-desc="Máquina de estados formal do Pedido de Material no AxisGov: DashboardUsuario → [Solicita material] → PedidoPendenteSecretaria → [Aprovação] → PedidoAprovado → [Realiza a entrega] → Entregue / [Rejeição] → PedidoRejeitado → Encerra Sistema.">
+                            <div class="diag-card-top">
+                                <span class="diag-type-badge font-mono">Estados</span>
+                                <button type="button" class="btn-open-diag" data-diag-trigger>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                                    </svg>
+                                    <span>Expandir Diagrama</span>
+                                </button>
+                            </div>
+                            <h3 class="diag-title">Diagrama de Estados: Ciclo de Vida do Pedido</h3>
+                            <p class="diag-desc">
+                                Máquina de estados formal do Pedido de Material no AxisGov: DashboardUsuario → [Solicita material] → PedidoPendenteSecretaria → [Aprovação] → PedidoAprovado → [Realiza a entrega] → Entregue / [Rejeição] → PedidoRejeitado → Encerra Sistema.
+                            </p>
+                            <div class="diag-image-preview" data-diag-trigger title="Clique para ampliar">
+                                <img src="images/diagrams/Pedido-Secretaria.png" alt="Diagrama de Estados: Ciclo de Vida do Pedido" class="diag-thumb-img" loading="lazy">
+                                <div class="diag-image-overlay">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                                    </svg>
+                                    <span>Ampliar Diagrama</span>
+                                </div>
+                            </div>
+                            <div class="diag-card-footer">
+                                <button type="button" class="link-diag-action" data-diag-trigger>
+                                    <span>Ver diagrama completo</span>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="5" x2="19" y1="12" y2="12"/>
+                                        <polyline points="12 5 19 12 12 19"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- CARD 7 -->
+                        <div class="diagram-card-gov"
+                             data-diag-title="Diagrama de Entidade-Relacionamento (DER)"
+                             data-diag-type="DER"
+                             data-diag-image="images/diagrams/Diagrama_DER.png"
+                             data-diag-desc="Modelagem completa do banco de dados do AxisGov: entidades Usuário, Secretaria, Permissao, Produto, Estoque, Movimentacao_estoque, Pedido (Solicitacao_Material e Solicitacao_Produto), Centro_Custo, Recebimento_Material, Relatorio, Requisicao e Item_Requisicao. Normalizado em 3FN.">
+                            <div class="diag-card-top">
+                                <span class="diag-type-badge font-mono">DER</span>
+                                <button type="button" class="btn-open-diag" data-diag-trigger>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                                    </svg>
+                                    <span>Expandir Diagrama</span>
+                                </button>
+                            </div>
+                            <h3 class="diag-title">Diagrama de Entidade-Relacionamento (DER)</h3>
+                            <p class="diag-desc">
+                                Modelagem completa do banco de dados do AxisGov: entidades Usuário, Secretaria, Permissao, Produto, Estoque, Movimentacao_estoque, Pedido (Solicitacao_Material e Solicitacao_Produto), Centro_Custo, Recebimento_Material, Relatorio, Requisicao e Item_Requisicao. Normalizado em 3FN.
+                            </p>
+                            <div class="diag-image-preview" data-diag-trigger title="Clique para ampliar">
+                                <img src="images/diagrams/Diagrama_DER.png" alt="Diagrama DER" class="diag-thumb-img" loading="lazy">
+                                <div class="diag-image-overlay">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                                    </svg>
+                                    <span>Ampliar Diagrama</span>
+                                </div>
+                            </div>
+                            <div class="diag-card-footer">
+                                <button type="button" class="link-diag-action" data-diag-trigger>
+                                    <span>Ver diagrama completo</span>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="5" x2="19" y1="12" y2="12"/>
+                                        <polyline points="12 5 19 12 12 19"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- CARD 8 -->
+                        <div class="diagram-card-gov"
+                             data-diag-title="Diagrama de Implantação (Deployment)"
+                             data-diag-type="Implantação"
+                             data-diag-image="images/diagrams/Deployment Diagram0.png"
+                             data-diag-desc="Arquitetura de implantação do AxisGov: Dispositivo Cliente (Web Browser) → HTTP → Servidor (Laravel/PHP com Blade) → TCP/IP PostgreSQL → Banco de Dados PostgreSQL. Ambiente monolítico com server-side rendering via Blade e persistência relacional.">
+                            <div class="diag-card-top">
+                                <span class="diag-type-badge font-mono">Implantação</span>
+                                <button type="button" class="btn-open-diag" data-diag-trigger>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                                    </svg>
+                                    <span>Expandir Diagrama</span>
+                                </button>
+                            </div>
+                            <h3 class="diag-title">Diagrama de Implantação (Deployment)</h3>
+                            <p class="diag-desc">
+                                Arquitetura de implantação do AxisGov: Dispositivo Cliente (Web Browser) → HTTP → Servidor (Laravel/PHP com Blade) → TCP/IP PostgreSQL → Banco de Dados PostgreSQL. Ambiente monolítico com server-side rendering via Blade e persistência relacional.
+                            </p>
+                            <div class="diag-image-preview" data-diag-trigger title="Clique para ampliar">
+                                <img src="images/diagrams/Deployment Diagram0.png" alt="Diagrama de Implantação" class="diag-thumb-img" loading="lazy">
+                                <div class="diag-image-overlay">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                                    </svg>
+                                    <span>Ampliar Diagrama</span>
+                                </div>
+                            </div>
+                            <div class="diag-card-footer">
+                                <button type="button" class="link-diag-action" data-diag-trigger>
+                                    <span>Ver diagrama completo</span>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="5" x2="19" y1="12" y2="12"/>
+                                        <polyline points="12 5 19 12 12 19"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                ITEM 5 DO EDITAL: TELAS / VÍDEOS
+                - Capturas de tela das principais funcionalidades
+                - Vídeos demonstrando o sistema
+            ========================================== -->
+            <section id="5-telas-e-video" class="section-interfaces-grid">
+                <div class="gov-container">
+                    <div class="util-header">
+                        <span class="util-kicker">ESTRUTURA OBRIGATÓRIA 5 / TELAS & VÍDEO DEMONSTRATIVO</span>
+                        <h2 class="util-title">
+                            Evidências de Funcionamento do Sistema em Produção.
+                        </h2>
+                        <p class="util-lead">
+                            Abaixo são apresentadas as capturas reais de telas dentro de molduras de navegadores com profundidade
+                            agressiva e a área reservada para os vídeos de até 5 minutos demonstrando a operação prática do AxisGov.
+                        </p>
+                    </div>
+
+                    <!-- 5.1 VÍDEO DEMONSTRATIVO 1 -->
+                    <div class="video-demonstrativo-card" style="margin-bottom: 32px;">
+                        <div class="video-card-left">
+                            <span class="video-badge-tag">EVIDÊNCIA 5.1 • VÍDEO DE DEMONSTRAÇÃO 1</span>
+                            <h3 class="video-heading">Demonstração Prática do AxisGov em Operação (Vídeo 1)</h3>
+                            <p class="video-subtext">
+                                Gravação detalhada demonstrando a arquitetura em produção do AxisGov: autenticação segura com controle
+                                de acesso por perfil (RBAC), navegação pelo catálogo de materiais, parametrização de secretarias
+                                e validação dos formulários transacionais.
+                            </p>
+                            <div class="video-features-pills">
+                                <span>• Demonstração Guiada</span>
+                                <span>• Sem Necessidade de Permissão</span>
+                                <span>• Arquivo MP4 Local</span>
+                            </div>
+                            <div class="video-action-row">
+                                <button type="button"
+                                        class="btn-gov primary"
+                                        data-video-modal-trigger
+                                        data-video-src="videos/video-1.mp4"
+                                        data-video-title="Vídeo 1 — Operação Geral do Sistema AxisGov"
+                                        data-video-desc="Demonstração prática do AxisGov em operação: autenticação RBAC, cadastros mestres e catálogo de produtos.">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polygon points="5 3 19 12 5 21 5 3"/>
+                                    </svg>
+                                    <span>Assistir Vídeo 1</span>
+                                </button>
+                                <a href="videos/video-1.mp4" download class="btn-gov outline">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="7 10 12 15 17 10"/>
+                                        <line x1="12" x2="12" y1="15" y2="3"/>
+                                    </svg>
+                                    <span>Baixar MP4</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="video-card-right">
+                            <div class="video-native-frame">
+                                <video src="videos/video-1.mp4" controls preload="metadata" class="stage-real-video"></video>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5.2 VÍDEO DEMONSTRATIVO 2 -->
+                    <div class="video-demonstrativo-card" style="margin-bottom: 40px;">
+                        <div class="video-card-left">
+                            <span class="video-badge-tag" style="background: #065f46; border-color: rgba(16, 185, 129, 0.3);">EVIDÊNCIA 5.2 • VÍDEO DE DEMONSTRAÇÃO 2</span>
+                            <h3 class="video-heading">Fluxo de Requisições & Movimentações de Estoque (Vídeo 2)</h3>
+                            <p class="video-subtext">
+                                Demonstração complementar focada no ciclo de requisição de materiais: solicitação emitida pela Diretoria
+                                setorial, fila de homologação e aprovação pelo Administrador, e registro atômico com lock pessimista
+                                de saídas e entradas no almoxarifado.
+                            </p>
+                            <div class="video-features-pills">
+                                <span>• Ciclo de Pedidos</span>
+                                <span>• Aprovação pelo Admin</span>
+                                <span>• Arquivo MP4 Local</span>
+                            </div>
+                            <div class="video-action-row">
+                                <button type="button"
+                                        class="btn-gov primary"
+                                        data-video-modal-trigger
+                                        data-video-src="videos/video-2.mp4"
+                                        data-video-title="Vídeo 2 — Fluxo de Requisições & Almoxarifado"
+                                        data-video-desc="Demonstração prática do fluxo de pedidos de material, aprovação pelo Administrador e conciliação de estoque.">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polygon points="5 3 19 12 5 21 5 3"/>
+                                    </svg>
+                                    <span>Assistir Vídeo 2</span>
+                                </button>
+                                <a href="videos/video-2.mp4" download class="btn-gov outline">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="7 10 12 15 17 10"/>
+                                        <line x1="12" x2="12" y1="15" y2="3"/>
+                                    </svg>
+                                    <span>Baixar MP4</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="video-card-right">
+                            <div class="video-native-frame">
+                                <video src="videos/video-2.mp4" controls preload="metadata" class="stage-real-video"></video>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5.3 CAPTURAS DE TELA -->
+                    <div class="interfaces-cards-grid">
+                        <div class="interface-showcase-item">
+                            <div class="browser-frame-hard">
+                                <div class="browser-bar-minimal">
+                                    <div class="bar-dots"><span></span><span></span><span></span></div>
+                                    <div class="bar-address"><span>axisgov.local / painel-geral</span></div>
+                                </div>
+                                <div class="browser-content-wrap real-image-body">
+                                    <img src="images/dashboard-real.png" alt="Painel Geral do AxisGov - Gestão Municipal" class="real-system-screenshot">
+                                </div>
+                            </div>
+                            <div class="interface-caption">
+                                <h4>Captura de Tela: Painel Geral de Gestão Municipal & Registro de Atividades</h4>
+                                <p>Visão em tempo real da infraestrutura municipal, secretarias ativas, gestores/admins e log de auditoria de operações em tempo real.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                ITEM 6 DO EDITAL: RELATÓRIO DE ESTÁGIO
+                - Disponibilizar arquivo PDF do Relatório
+            ========================================== -->
+            <section id="6-relatorio-estagio" class="section-relatorio-official">
+                <div class="gov-container">
+                    <div class="dossie-box">
+                        <div class="dossie-left">
+                            <span class="dossie-tag">ESTRUTURA OBRIGATÓRIA 6 • RELATÓRIO DE ESTÁGIO</span>
+                            <h2 class="dossie-title">Arquivo PDF do Relatório de Estágio Atualizado.</h2>
+                            <p class="dossie-summary">
+                                Em conformidade com a avaliação bimestral da UniFil, disponibiliza-se abaixo o documento formal
+                                contendo a descrição de todas as atividades desenvolvidas ao longo do bimestre, evidências técnicas
+                                e validação das horas de estágio.
+                            </p>
+                            <div class="dossie-points">
+                                <span>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="20 6 9 17 4 12"/>
+                                    </svg>
+                                    Atividades Atualizadas até 14/09
+                                </span>
+                                <span>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="20 6 9 17 4 12"/>
+                                    </svg>
+                                    Assinatura do Supervisor & Aluno
+                                </span>
+                                <span>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="20 6 9 17 4 12"/>
+                                    </svg>
+                                    Acesso Aberto Sem Solicitação de Permissão
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="dossie-right">
+                            <div class="dossie-meta-card">
+                                <span class="meta-card-title">DOCUMENTO OFICIAL DE ESTÁGIO</span>
+                                <div class="meta-card-row">
+                                    <span>Documento:</span>
+                                    <strong class="font-mono">Relatório de Estágio — Samir</strong>
+                                </div>
+                                <div class="meta-card-row">
+                                    <span>Plataforma:</span>
+                                    <strong>Google Docs Oficial (Nuvem)</strong>
+                                </div>
+                                <div class="meta-card-row">
+                                    <span>Status da Entrega:</span>
+                                    <strong class="text-green">Homologado & Atestado</strong>
+                                </div>
+                                <div class="meta-card-row">
+                                    <span>Data Limite:</span>
+                                    <strong>14/09 (Prazo Cumprido)</strong>
+                                </div>
+
+                                <div class="dossie-btn-stack">
+                                    <a href="https://docs.google.com/document/d/1ApLJZ0blZtzXAySBunq6blOxDx_I1j7l/edit?usp=sharing&ouid=101647894565829657235&rtpof=true&sd=true"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       class="btn-gov primary full-w">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                            <polyline points="15 3 21 3 21 9"/>
+                                            <line x1="10" x2="21" y1="14" y2="3"/>
+                                        </svg>
+                                        <span>Acessar Relatório no Google Docs</span>
+                                    </a>
+                                    <a href="https://docs.google.com/document/d/1ApLJZ0blZtzXAySBunq6blOxDx_I1j7l/export?format=pdf"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       class="btn-gov outline full-w">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                            <polyline points="7 10 12 15 17 10"/>
+                                            <line x1="12" x2="12" y1="15" y2="3"/>
+                                        </svg>
+                                        <span>Baixar Cópia em PDF</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                ITEM 7 DO EDITAL: IDENTIFICAÇÃO DO ALUNO
+                - Nome completo
+                - Matrícula
+                - Nome do professor orientador
+            ========================================== -->
+            <section id="7-identificacao-aluno" class="section-identificacao-aluno">
+                <div class="gov-container">
+                    <div class="util-header">
+                        <span class="util-kicker">ESTRUTURA OBRIGATÓRIA 7 / IDENTIFICAÇÃO DO ALUNO</span>
+                        <h2 class="util-title">
+                            Identificação Acadêmica do Discente & Orientador.
+                        </h2>
+                        <p class="util-lead">
+                            Dados obrigatórios para homologação da nota bimestral no Centro Universitário Filadélfia (UniFil).
+                        </p>
+                    </div>
+
+                    <div class="aluno-id-card-hard">
+                        <div class="aluno-card-header">
+                            <div class="aluno-badge-seal">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                    <path d="m9 12 2 2 4-4"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <span class="unifil-label">CENTRO UNIVERSITÁRIO FILADÉLFIA — UNIFIL</span>
+                                <h3 class="aluno-card-title">Ficha de Identificação do Estagiário</h3>
+                            </div>
+                        </div>
+
+                        <div class="aluno-details-grid">
+                            <div class="aluno-detail-item highlight">
+                                <span class="detail-k">NOME COMPLETO DO ALUNO:</span>
+                                <strong class="detail-v text-blue">Samir Chehade</strong>
+                                <span class="detail-sub">Discente de Estágio Supervisionado</span>
+                            </div>
+
+                            <div class="aluno-detail-item">
+                                <span class="detail-k">MATRÍCULA INSTITUCIONAL:</span>
+                                <strong class="detail-v font-mono">241072132</strong>
+                                <span class="detail-sub">Registro Acadêmico Ativo</span>
+                            </div>
+
+                            <div class="aluno-detail-item">
+                                <span class="detail-k">PROFESSOR ORIENTADOR:</span>
+                                <strong class="detail-v">Prof. Luiz Felipe Gonsalves Silva</strong>
+                                <span class="detail-sub">Docente Responsável pela Avaliação</span>
+                            </div>
+
+                            <div class="aluno-detail-item">
+                                <span class="detail-k">DISCIPLINA / CURSO:</span>
+                                <strong class="detail-v">Engenharia de Software / Estágio</strong>
+                                <span class="detail-sub">Avaliação Bimestral (Valor: 10,0 Pontos)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- ==========================================
+            RODAPÉ INSTITUCIONAL
+        ========================================== -->
+        <footer class="gov-footer">
+            <div class="gov-container">
+                <div class="gov-footer-grid">
+                    <div class="footer-col-brand">
+                        <div class="gov-brand white">
+                            <div class="gov-brand-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                    <path d="m9 12 2 2 4-4"/>
+                                </svg>
+                            </div>
+                            <div class="gov-brand-text">
+                                <span class="brand-name">
+                                    Axis<strong>Gov</strong>
+                                </span>
+                                <span class="brand-tagline">PORTFÓLIO DE ESTÁGIO • UNIFIL</span>
+                            </div>
+                        </div>
+                        <p class="footer-lead-text">
+                            Avaliação Bimestral da disciplina de Estágio Supervisionado em Engenharia de Software.
+                            Desenvolvido por <strong>Samir Chehade</strong> sob orientação docente da UniFil.
+                        </p>
+                        <div class="footer-legal-badge">
+                            <span>ENTREGA OFICIAL DE 14/09 • TODOS OS 7 ITENS DO EDITAL CUMPRIDOS</span>
+                        </div>
+                    </div>
+
+                    <div class="footer-col-nav">
+                        <h5>Módulos do Sistema</h5>
+                        <ul>
+                            <li><a href="#3-casos-e-cronograma">UC01 — Autenticação & RBAC</a></li>
+                            <li><a href="#3-casos-e-cronograma">UC02 — Painel Fiscal & LRF</a></li>
+                            <li><a href="#3-casos-e-cronograma">UC03 — Tombamento de Bens</a></li>
+                            <li><a href="#3-casos-e-cronograma">UC04 — Almoxarifado Central</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-col-nav">
+                        <h5>Documentação & Diagramas</h5>
+                        <ul>
+                            <li><a href="#4-documentacao">Diagrama de Classes</a></li>
+                            <li><a href="#4-documentacao">Diagramas de Sequência</a></li>
+                            <li><a href="#4-documentacao">Diagramas de Estados</a></li>
+                            <li><a href="#4-documentacao">Diagrama DER (PostgreSQL)</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-col-nav">
+                        <h5>Navegação do Edital</h5>
+                        <ul>
+                            <li><a href="#1-pagina-inicial">1. Página Inicial</a></li>
+                            <li><a href="#2-sobre-o-projeto">2. Sobre o Projeto</a></li>
+                            <li><a href="#3-casos-e-cronograma">3. Casos & Cronograma</a></li>
+                            <li><a href="#4-documentacao">4. Documentação Técnica</a></li>
+                            <li><a href="#5-telas-e-video">5. Telas & Vídeo</a></li>
+                            <li><a href="#6-relatorio-estagio">6. Relatório de Estágio</a></li>
+                            <li><a href="#7-identificacao-aluno">7. Identificação do Aluno</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="footer-legal-bar">
+                    <span>© 2024 AxisGov • Portfólio Acadêmico de Estágio Supervisionado. Todos os direitos reservados.</span>
+                    <span>UniFil — Centro Universitário Filadélfia • Londrina / PR</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ==========================================
+        MODAL DE DIAGRAMAS EXPANDIDOS (LIGHTBOX)
+    ========================================== -->
+    <div id="diagram-modal" class="gov-modal-backdrop">
+        <div class="gov-modal-card">
+            <div class="gov-modal-header">
+                <div>
+                    <span id="diag-modal-type" class="modal-kicker font-mono">DIAGRAMA OFICIAL</span>
+                    <h3 id="diag-modal-title" class="modal-heading">Visualização do Diagrama</h3>
+                </div>
+                <button type="button" class="btn-close-modal" aria-label="Fechar modal">✕</button>
+            </div>
+            <div class="gov-modal-body">
+                <p id="diag-modal-desc" class="modal-desc"></p>
+                <div class="modal-diagram-img-wrap">
+                    <img id="diag-modal-img" src="" alt="Diagrama expandido" class="modal-diagram-img">
+                </div>
+            </div>
+            <div class="gov-modal-footer">
+                <button type="button" class="btn-gov outline">Fechar Janela</button>
+                <a id="diag-modal-ext-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-gov primary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                        <polyline points="15 3 21 3 21 9"/>
+                        <line x1="10" x2="21" y1="14" y2="3"/>
+                    </svg>
+                    <span>Abrir Imagem em Alta Resolução</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+        MODAL DE VÍDEO DEMONSTRATIVO (PLAYER)
+    ========================================== -->
+    <div id="video-modal" class="gov-modal-backdrop">
+        <div class="gov-modal-card video-modal">
+            <div class="gov-modal-header">
+                <div>
+                    <span class="modal-kicker font-mono">EVIDÊNCIA DE FUNCIONAMENTO • AXISGOV</span>
+                    <h3 id="video-modal-title" class="modal-heading">Player de Vídeo Demonstrativo</h3>
+                </div>
+                <button type="button" class="btn-close-modal" aria-label="Fechar modal">✕</button>
+            </div>
+            <div class="gov-modal-body" style="padding: 0; background: #000;">
+                <video id="video-modal-player" src="" controls style="width: 100%; max-height: 65vh; display: block; background: #081325;"></video>
+                <div style="padding: 16px 20px; background: #ffffff;">
+                    <p id="video-modal-desc" style="margin: 0; color: var(--gov-text-secondary); font-size: 14px; line-height: 1.5;"></p>
+                </div>
+            </div>
+            <div class="gov-modal-footer">
+                <button type="button" class="btn-gov outline">Fechar</button>
+                <a id="video-modal-download" href="#" download class="btn-gov primary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" x2="12" y1="15" y2="3"/>
+                    </svg>
+                    <span>Baixar Arquivo MP4</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de Interatividade -->
+    <script src="js/main.js"></script>
+</body>
+</html>
